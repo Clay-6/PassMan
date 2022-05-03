@@ -27,6 +27,11 @@ fn main() -> Result<()> {
         } => {
             let new = Entry::new(name, location, password);
             manager::add(new, file)?;
+            println!("Entry successfully added");
+        }
+        Action::Remove { name, file } => {
+            manager::remove(&name, file)?;
+            println!("Entry `{name}` successfully removed");
         }
         Action::Show { name, file } => manager::show(name, file)?,
     }
@@ -66,6 +71,19 @@ enum Action {
         /// The password to be saved
         password: String,
         /// Path to a specific file
+        ///
+        /// Must be a valid JSON file
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
+    /// Remove an entry from the file
+    #[clap(alias("rm"))]
+    Remove {
+        /// The name of the entry to remove
+        ///
+        /// Must be the correct case
+        name: String,
+        /// The entries file to use
         ///
         /// Must be a valid JSON file
         #[clap(short, long)]

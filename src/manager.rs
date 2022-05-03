@@ -9,7 +9,7 @@ use std::{
 };
 
 /// Struct to serialise & deserialise JSON to & from
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Entry {
     name: String,
     location: String,
@@ -26,12 +26,6 @@ impl Entry {
     }
 }
 
-impl Display for Entry {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}: {} [{}]", self.name, self.password, self.location)
-    }
-}
-
 pub fn add(new: Entry, path: Option<PathBuf>) -> Result<()> {
     let path = path.unwrap_or_else(default_path);
     let mut file = fs::OpenOptions::new()
@@ -45,6 +39,25 @@ pub fn add(new: Entry, path: Option<PathBuf>) -> Result<()> {
 
     file.set_len(0)?;
     file.seek(SeekFrom::Start(0))?;
+    serde_json::to_writer_pretty(&mut file, &entries)?;
+
+    Ok(())
+}
+
+pub fn remove(name: &str, file: Option<PathBuf>) -> Result<()> {
+    let path = file.unwrap_or_else(default_path);
+    let mut file = fs::OpenOptions::new().read(true).write(true).open(path)?;
+
+    let mut entries = get_entries(&file)?;
+    file.set_len(0)?;
+    file.seek(SeekFrom::Start(0))?;
+
+    entries = entries
+        .iter()
+        .filter(|entry| entry.name != name)
+        .cloned()
+        .collect::<Vec<Entry>>();
+
     serde_json::to_writer_pretty(&mut file, &entries)?;
 
     Ok(())
@@ -86,4 +99,10 @@ fn default_path() -> PathBuf {
             path
         })
         .expect("Failed to set default file path")
+}
+
+impl Display for Entry {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}: {} [{}]", self.name, self.password, self.location)
+    }
 }
