@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 
 use std::{
@@ -35,6 +35,10 @@ pub fn add(new: Entry, path: Option<PathBuf>) -> Result<()> {
         .open(path)?;
 
     let mut entries = get_entries(&file)?;
+    if entries.iter().any(|entry| entry.name == new.name) {
+        return Err(anyhow!("Entry already exists"));
+    }
+
     entries.push(new);
 
     file.set_len(0)?;
@@ -80,6 +84,10 @@ pub fn show(filter: Option<String>, file: Option<PathBuf>) -> Result<()> {
         None => entries.iter().for_each(|entry| println!("{entry}")),
     }
 
+    Ok(())
+}
+
+pub fn edit(name: String, file: Option<PathBuf>) -> Result<()> {
     Ok(())
 }
 

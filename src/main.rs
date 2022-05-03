@@ -26,14 +26,20 @@ fn main() -> Result<()> {
             file,
         } => {
             let new = Entry::new(name, location, password);
-            manager::add(new, file)?;
-            println!("Entry successfully added");
+            match manager::add(new, file) {
+                Ok(_) => println!("Entry successfully added"),
+                Err(e) if e.to_string() == *"Entry already exists" => {
+                    eprintln!("Entry already exists. No changes made")
+                }
+                Err(e) => return Err(e),
+            };
         }
         Action::Remove { name, file } => {
             manager::remove(&name, file)?;
             println!("Entry `{name}` successfully removed");
         }
         Action::Show { name, file } => manager::show(name, file)?,
+        Action::Edit { name, file } => todo!(),
     }
 
     Ok(())
@@ -81,7 +87,7 @@ enum Action {
     Remove {
         /// The name of the entry to remove
         ///
-        /// Must be the correct case
+        /// Is case sensitive
         name: String,
         /// The entries file to use
         ///
@@ -97,6 +103,18 @@ enum Action {
         #[clap(short, long)]
         name: Option<String>,
         /// The entries file to use
+        ///
+        /// Must be a valid JSON file
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
+    /// Edit a specified password entry
+    Edit {
+        /// The name of the entry to edit
+        ///
+        /// Is case sensitive
+        name: String,
+        /// The path to the entries file to use
         ///
         /// Must be a valid JSON file
         #[clap(short, long)]
