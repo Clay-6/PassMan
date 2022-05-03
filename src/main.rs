@@ -28,6 +28,7 @@ fn main() -> Result<()> {
             let new = Entry::new(name, location, password);
             manager::add(new, file)?;
         }
+        Action::Show { name, file } => manager::show(name, file)?,
     }
 
     Ok(())
@@ -66,8 +67,21 @@ enum Action {
         password: String,
         /// Path to a specific file
         ///
-        /// Must be a JSON file
-        #[clap(short, long, parse(from_os_str))]
+        /// Must be a valid JSON file
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
+    /// List all saved entries, or specify the name of an entry
+    Show {
+        /// The name of the entry to show
+        ///
+        /// Shows all entries if none is specified
+        #[clap(short, long)]
+        name: Option<String>,
+        /// The entries file to use
+        ///
+        /// Must be a valid JSON file
+        #[clap(short, long)]
         file: Option<PathBuf>,
     },
 }
