@@ -38,7 +38,7 @@ fn main() -> Result<()> {
             manager::remove(&name, file)?;
             println!("Entry `{name}` successfully removed");
         }
-        Action::Show { name, file } => manager::show(name, file)?,
+        Action::Show { filter: name, file } => manager::show(name, file)?,
         Action::Edit { name, file } => {
             let new_name = get_input::<String>("Enter a new name: ").trim().to_string();
             let new_pw = get_input::<String>("Enter a new password: ")
@@ -95,7 +95,7 @@ enum Action {
         #[clap(short, long)]
         special: bool,
     },
-    /// Add a password
+    /// Add a password entry
     Add {
         /// The name of the password entry
         name: String,
@@ -111,7 +111,7 @@ enum Action {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
-    /// Remove an entry from the file
+    /// Remove a password entry
     #[clap(alias("rm"))]
     Remove {
         /// The name of the entry to remove
@@ -124,20 +124,22 @@ enum Action {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
-    /// List all saved entries, or specify the name of an entry
+    /// List saved entries
+    ///
+    /// Can show all entries, or specify a string to filter by
     Show {
         /// The name of the entry to show
         ///
         /// Shows all entries if none is specified
         #[clap(short, long)]
-        name: Option<String>,
+        filter: Option<String>,
         /// The entries file to use
         ///
         /// Must be a valid JSON file
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
-    /// Edit a specified password entry
+    /// Edit a password entry
     Edit {
         /// The name of the entry to edit
         ///
