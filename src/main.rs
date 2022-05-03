@@ -39,10 +39,39 @@ fn main() -> Result<()> {
             println!("Entry `{name}` successfully removed");
         }
         Action::Show { name, file } => manager::show(name, file)?,
-        Action::Edit { name, file } => todo!(),
+        Action::Edit { name, file } => {
+            let new_name = get_input::<String>("Enter a new name: ").trim().to_string();
+            let new_pw = get_input::<String>("Enter a new password: ")
+                .trim()
+                .to_string();
+            let new_location = get_input::<String>("Enter a new location: ")
+                .trim()
+                .to_string();
+            let new_entry = Entry::new(new_name, new_location, new_pw);
+
+            manager::edit(&name, new_entry, file)?;
+            println!("Entry `{name}` edited successfully");
+        }
     }
 
     Ok(())
+}
+
+fn get_input<T>(prompt: &str) -> T
+where
+    T: std::str::FromStr,
+    <T as std::str::FromStr>::Err: std::fmt::Debug,
+{
+    use std::io::{self, Write};
+
+    let mut buf = String::new();
+    print!("{prompt}");
+    io::stdout().flush().unwrap();
+    io::stdin()
+        .read_line(&mut buf)
+        .expect("Failed to read line");
+
+    buf.parse::<T>().expect("Failed to parse input")
 }
 
 #[derive(Debug, Parser)]
@@ -70,12 +99,12 @@ enum Action {
     Add {
         /// The name of the password entry
         name: String,
+        /// The password to be saved
+        password: String,
         /// Where the password will be used
         ///
         /// e.g. The website URL
         location: String,
-        /// The password to be saved
-        password: String,
         /// Path to a specific file
         ///
         /// Must be a valid JSON file

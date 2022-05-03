@@ -87,7 +87,28 @@ pub fn show(filter: Option<String>, file: Option<PathBuf>) -> Result<()> {
     Ok(())
 }
 
-pub fn edit(name: String, file: Option<PathBuf>) -> Result<()> {
+pub fn edit(name: &str, new: Entry, file: Option<PathBuf>) -> Result<()> {
+    let path = file.unwrap_or_else(default_path);
+    let mut file = fs::OpenOptions::new().read(true).write(true).open(path)?;
+
+    let entries = get_entries(&file)?;
+
+    let entries: Vec<Entry> = entries
+        .iter()
+        .map(|entry| {
+            if entry.name == name {
+                new.clone()
+            } else {
+                entry.clone()
+            }
+        })
+        .collect();
+
+    file.set_len(0)?;
+    file.seek(SeekFrom::Start(0))?;
+
+    serde_json::to_writer_pretty(&mut file, &entries)?;
+
     Ok(())
 }
 
