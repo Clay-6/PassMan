@@ -111,7 +111,7 @@ enum Action {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
-    /// Remove a password entry
+    /// Remove a password entry. Can also use `rm`
     #[clap(alias("rm"))]
     Remove {
         /// The name of the entry to remove
@@ -124,9 +124,10 @@ enum Action {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
-    /// List saved entries
+    /// List saved entries. Can also use `ls`
     ///
     /// Can show all entries, or specify a string to filter by
+    #[clap(alias("ls"))]
     Show {
         /// The name of the entry to show
         ///
