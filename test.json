@@ -1,0 +1,12 @@
+[
+  {
+    "name": "test",
+    "location": "test.com",
+    "password": "12345"
+  },
+  {
+    "name": "test2",
+    "location": "test.co.uk",
+    "password": "678910"
+  }
+]
