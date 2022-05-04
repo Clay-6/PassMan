@@ -12,16 +12,18 @@ use std::{
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Entry {
     name: String,
-    location: String,
+    username: String,
     password: String,
+    location: String,
 }
 
 impl Entry {
-    pub fn new(name: String, location: String, password: String) -> Self {
+    pub fn new(name: String, location: String, username: String, password: String) -> Self {
         Self {
             name,
-            location,
+            username,
             password,
+            location,
         }
     }
 }

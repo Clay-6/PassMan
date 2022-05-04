@@ -1,7 +1,8 @@
 [
   {
     "name": "Test",
-    "location": "test.co.uk",
-    "password": "12345"
+    "username": "testman",
+    "password": "12345",
+    "location": "test.co.uk"
   }
 ]

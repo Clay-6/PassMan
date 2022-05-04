@@ -22,10 +22,11 @@ fn main() -> Result<()> {
         Action::Add {
             name,
             location,
+            username,
             password,
             file,
         } => {
-            let new = Entry::new(name, location, password);
+            let new = Entry::new(name, location, username, password);
             match manager::add(new, file) {
                 Ok(_) => println!("Entry successfully added"),
                 Err(e) if e.to_string() == *"Entry already exists" => {
@@ -41,13 +42,16 @@ fn main() -> Result<()> {
         Action::Show { filter: name, file } => manager::show(name, file)?,
         Action::Edit { name, file } => {
             let new_name = get_input::<String>("Enter a new name: ").trim().to_string();
+            let new_un = get_input::<String>("Enter a new username: ")
+                .trim()
+                .to_string();
             let new_pw = get_input::<String>("Enter a new password: ")
                 .trim()
                 .to_string();
             let new_location = get_input::<String>("Enter a new location: ")
                 .trim()
                 .to_string();
-            let new_entry = Entry::new(new_name, new_location, new_pw);
+            let new_entry = Entry::new(new_name, new_location, new_un, new_pw);
 
             manager::edit(&name, new_entry, file)?;
             println!("Entry `{name}` edited successfully");
@@ -99,6 +103,8 @@ enum Action {
     Add {
         /// The name of the password entry
         name: String,
+        /// The username to be saved
+        username: String,
         /// The password to be saved
         password: String,
         /// Where the password will be used
