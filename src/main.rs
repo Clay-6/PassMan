@@ -138,7 +138,7 @@ enum Action {
         /// The name of the entry to show
         ///
         /// Shows all entries if none is specified
-        #[clap(short, long)]
+        #[clap(short = 'F', long)]
         filter: Option<String>,
         /// The entries file to use
         ///
