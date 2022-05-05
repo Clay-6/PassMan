@@ -13,18 +13,27 @@ use std::{
 pub struct Entry {
     name: String,
     username: String,
-    password: String,
+    password: Vec<u8>,
     location: String,
 }
 
 impl Entry {
     pub fn new(name: String, location: String, username: String, password: String) -> Self {
+        let password = Self::hide_password(password);
         Self {
             name,
             username,
             password,
             location,
         }
+    }
+
+    fn hide_password(password: String) -> Vec<u8> {
+        Vec::from(password.as_bytes())
+    }
+
+    fn show_password(&self) -> String {
+        String::from_utf8(self.password.clone()).unwrap()
     }
 }
 
@@ -137,7 +146,10 @@ impl Display for Entry {
         write!(
             f,
             "{} [{}]:\n\tUsername: {}\n\tPassword: {}",
-            self.name, self.location, self.username, self.password,
+            self.name,
+            self.location,
+            self.username,
+            self.show_password(),
         )
     }
 }

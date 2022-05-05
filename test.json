@@ -1,8 +1,14 @@
 [
   {
     "name": "Test",
-    "username": "testman",
-    "password": "12345",
+    "username": "test",
+    "password": [
+      49,
+      50,
+      51,
+      52,
+      53
+    ],
     "location": "test.co.uk"
   }
 ]
