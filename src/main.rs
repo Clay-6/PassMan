@@ -104,12 +104,15 @@ enum Action {
         /// The name of the password entry
         name: String,
         /// The username to be saved
+        #[clap(short, long)]
         username: String,
         /// The password to be saved
+        #[clap(short, long)]
         password: String,
         /// Where the password will be used
         ///
         /// e.g. The website URL
+        #[clap(short, long)]
         location: String,
         /// Path to a specific file
         ///
