@@ -138,9 +138,7 @@ enum Action {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
-    /// List saved entries. Can also use `ls`
-    ///
-    /// Can show all entries, or specify a string to filter by
+    /// List all saved entries. Can also use `ls`
     #[clap(alias("ls"))]
     List {
         /// The entries file to use
@@ -149,8 +147,11 @@ enum Action {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
+    /// See the info in a specific entry
     Show {
         /// The name of the password entry to show
+        ///
+        /// Case insensitive
         name: String,
         /// Path to the entries file to use
         ///
