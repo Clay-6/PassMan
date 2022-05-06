@@ -116,12 +116,40 @@ pub fn edit(name: &str, new: Entry, file: Option<PathBuf>) -> Result<()> {
     let mut file = fs::OpenOptions::new().read(true).write(true).open(path)?;
 
     let entries = get_entries(&file)?;
-
+    let mut edited = false;
     let entries: Vec<Entry> = entries
         .iter()
         .map(|entry| {
             if entry.name == name {
-                new.clone()
+                let new_name = if new.name.is_empty() {
+                    &entry.name
+                } else {
+                    &new.name
+                };
+                let new_username = if new.username.is_empty() {
+                    &entry.username
+                } else {
+                    &new.username
+                };
+                let new_pw = if new.show_password().is_empty() {
+                    entry.show_password()
+                } else {
+                    new.show_password()
+                };
+                let new_location = if new.location.is_empty() {
+                    &entry.location
+                } else {
+                    &new.location
+                };
+
+                edited = true;
+
+                Entry::new(
+                    new_name.clone(),
+                    new_location.clone(),
+                    new_username.clone(),
+                    new_pw,
+                )
             } else {
                 entry.clone()
             }
@@ -133,7 +161,26 @@ pub fn edit(name: &str, new: Entry, file: Option<PathBuf>) -> Result<()> {
 
     serde_json::to_writer_pretty(&mut file, &entries)?;
 
-    Ok(())
+    if edited {
+        Ok(())
+    } else {
+        Err(anyhow!("Entry does not exist"))
+    }
+}
+
+pub fn entry_exists(search_name: &str, file: Option<PathBuf>) -> Result<bool> {
+    let path = file.unwrap_or_else(default_path);
+    let file = OpenOptions::new().read(true).open(path)?;
+
+    let entries = get_entries(&file)?;
+
+    for entry in entries {
+        if entry.name == search_name {
+            return Ok(true);
+        }
+    }
+
+    Ok(false)
 }
 
 fn get_entries(file: &fs::File) -> Result<Vec<Entry>> {

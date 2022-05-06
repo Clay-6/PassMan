@@ -3,7 +3,7 @@ mod manager;
 
 use std::path::PathBuf;
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use clap::{Parser, Subcommand};
 
 use manager::Entry;
@@ -26,21 +26,29 @@ fn main() -> Result<()> {
             password,
             file,
         } => {
+            if manager::entry_exists(&name, file.clone())? {
+                return Err(anyhow!("Entry already exists. No changes made"));
+            }
             let new = Entry::new(name, location, username, password);
             match manager::add(new, file) {
                 Ok(_) => println!("Entry successfully added"),
-                Err(e) if e.to_string() == *"Entry already exists" => {
-                    eprintln!("Entry already exists. No changes made")
-                }
                 Err(e) => return Err(e),
             };
         }
         Action::Remove { name, file } => {
+            if !manager::entry_exists(&name, file.clone())? {
+                return Err(anyhow!("Entry does not exist. No changes made"));
+            }
+
             manager::remove(&name, file)?;
             println!("Entry `{name}` successfully removed");
         }
         Action::List { file } => manager::list(file)?,
         Action::Edit { name, file } => {
+            if !manager::entry_exists(&name, file.clone())? {
+                return Err(anyhow!("Entry not found. No changes made"));
+            }
+
             let new_name = get_input::<String>("Enter a new name: ").trim().to_string();
             let new_un = get_input::<String>("Enter a new username: ")
                 .trim()
@@ -54,7 +62,6 @@ fn main() -> Result<()> {
             let new_entry = Entry::new(new_name, new_location, new_un, new_pw);
 
             manager::edit(&name, new_entry, file)?;
-            println!("Entry `{name}` edited successfully");
         }
         Action::Show { name, file } => match manager::show(name, file) {
             Ok(()) => {}
@@ -160,6 +167,8 @@ enum Action {
         file: Option<PathBuf>,
     },
     /// Edit a password entry
+    ///
+    /// Leave fields blank to leave them unchanged
     Edit {
         /// The name of the entry to edit
         ///
