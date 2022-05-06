@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use std::{
     fmt::Display,
-    fs,
+    fs::{self, OpenOptions},
     io::{Seek, SeekFrom},
     path::PathBuf,
 };
@@ -78,21 +78,34 @@ pub fn remove(name: &str, file: Option<PathBuf>) -> Result<()> {
     Ok(())
 }
 
-pub fn show(filter: Option<String>, file: Option<PathBuf>) -> Result<()> {
+pub fn show(name: String, file: Option<PathBuf>) -> Result<()> {
     let path = file.unwrap_or_else(default_path);
     let file = fs::OpenOptions::new().read(true).open(path)?;
 
     let entries = get_entries(&file)?;
+    let mut shown = false;
 
-    match filter {
-        Some(filter) => {
-            for entry in entries {
-                if entry.name.contains(&filter) {
-                    println!("{entry}")
-                }
-            }
+    entries.iter().for_each(|entry| {
+        if entry.name.to_lowercase() == name.to_lowercase() {
+            println!("{entry}");
+            shown = true;
         }
-        None => entries.iter().for_each(|entry| println!("{entry}")),
+    });
+    if !shown {
+        Err(anyhow!("Entry does not exist"))
+    } else {
+        Ok(())
+    }
+}
+
+pub fn list(path: Option<PathBuf>) -> Result<()> {
+    let path = path.unwrap_or_else(default_path);
+    let file = OpenOptions::new().read(true).open(path)?;
+
+    let entries = get_entries(&file)?;
+
+    for entry in entries {
+        println!("{} [{}]", entry.name, entry.location);
     }
 
     Ok(())

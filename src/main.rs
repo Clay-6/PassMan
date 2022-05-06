@@ -39,7 +39,7 @@ fn main() -> Result<()> {
             manager::remove(&name, file)?;
             println!("Entry `{name}` successfully removed");
         }
-        Action::Show { filter: name, file } => manager::show(name, file)?,
+        Action::List { file } => manager::list(file)?,
         Action::Edit { name, file } => {
             let new_name = get_input::<String>("Enter a new name: ").trim().to_string();
             let new_un = get_input::<String>("Enter a new username: ")
@@ -56,6 +56,11 @@ fn main() -> Result<()> {
             manager::edit(&name, new_entry, file)?;
             println!("Entry `{name}` edited successfully");
         }
+        Action::Show { name, file } => match manager::show(name, file) {
+            Ok(()) => {}
+            Err(e) if e.to_string() == *"Entry does not exist" => eprintln!("{e}"),
+            Err(e) => return Err(e),
+        },
     }
 
     Ok(())
@@ -137,13 +142,17 @@ enum Action {
     ///
     /// Can show all entries, or specify a string to filter by
     #[clap(alias("ls"))]
-    Show {
-        /// The name of the entry to show
-        ///
-        /// Shows all entries if none is specified
-        #[clap(short = 'F', long)]
-        filter: Option<String>,
+    List {
         /// The entries file to use
+        ///
+        /// Must be a valid JSON file
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
+    Show {
+        /// The name of the password entry to show
+        name: String,
+        /// Path to the entries file to use
         ///
         /// Must be a valid JSON file
         #[clap(short, long)]
