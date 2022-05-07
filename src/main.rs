@@ -1,11 +1,11 @@
+mod cli;
 mod generator;
 mod manager;
 
-use std::path::PathBuf;
-
 use anyhow::{anyhow, Result};
-use clap::{Parser, Subcommand};
+use clap::Parser;
 
+use cli::{Action, Args};
 use manager::Entry;
 
 fn main() -> Result<()> {
@@ -88,96 +88,4 @@ where
         .expect("Failed to read line");
 
     buf.parse::<T>().expect("Failed to parse input")
-}
-
-#[derive(Debug, Parser)]
-struct Args {
-    /// The action to perform
-    #[clap(subcommand)]
-    action: Action,
-}
-
-#[derive(Debug, Subcommand)]
-enum Action {
-    /// Randomly generate a password
-    Generate {
-        /// The length of the password
-        #[clap(default_value_t = 10)]
-        length: u32,
-        /// Whether or not to allow numbers in the password
-        #[clap(short, long)]
-        numbers: bool,
-        /// Whether or not to allow special characters in the password
-        #[clap(short, long)]
-        special: bool,
-    },
-    /// Add a password entry
-    Add {
-        /// The name of the password entry
-        name: String,
-        /// The username to be saved
-        #[clap(short, long)]
-        username: String,
-        /// The password to be saved
-        #[clap(short, long)]
-        password: String,
-        /// Where the password will be used
-        ///
-        /// e.g. The website URL
-        #[clap(short, long)]
-        location: String,
-        /// Path to a specific file
-        ///
-        /// Must be a valid JSON file
-        #[clap(short, long)]
-        file: Option<PathBuf>,
-    },
-    /// Remove a password entry. Can also use `rm`
-    #[clap(alias("rm"))]
-    Remove {
-        /// The name of the entry to remove
-        ///
-        /// Is case sensitive
-        name: String,
-        /// The entries file to use
-        ///
-        /// Must be a valid JSON file
-        #[clap(short, long)]
-        file: Option<PathBuf>,
-    },
-    /// List all saved entries. Can also use `ls`
-    #[clap(alias("ls"))]
-    List {
-        /// The entries file to use
-        ///
-        /// Must be a valid JSON file
-        #[clap(short, long)]
-        file: Option<PathBuf>,
-    },
-    /// See the info in a specific entry
-    Show {
-        /// The name of the password entry to show
-        ///
-        /// Case insensitive
-        name: String,
-        /// Path to the entries file to use
-        ///
-        /// Must be a valid JSON file
-        #[clap(short, long)]
-        file: Option<PathBuf>,
-    },
-    /// Edit a password entry
-    ///
-    /// Leave fields blank to leave them unchanged
-    Edit {
-        /// The name of the entry to edit
-        ///
-        /// Is case sensitive
-        name: String,
-        /// The path to the entries file to use
-        ///
-        /// Must be a valid JSON file
-        #[clap(short, long)]
-        file: Option<PathBuf>,
-    },
 }
