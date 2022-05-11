@@ -6,7 +6,11 @@ use anyhow::{anyhow, Result};
 use clap::Parser;
 
 use cli::{Action, Args, NotesSubcmd};
-use manager::{entry_exists, notes, Entry};
+use manager::{
+    entry_exists,
+    errors::{ENTRY_DOESNT_EXIST, ENTRY_EXISTS},
+    notes, Entry,
+};
 
 fn main() -> Result<()> {
     let args = Args::parse();
@@ -27,17 +31,16 @@ fn main() -> Result<()> {
             file,
         } => {
             if manager::entry_exists(&name, file.clone())? {
-                return Err(anyhow!("Entry already exists. No changes made"));
+                return Err(anyhow!(ENTRY_EXISTS));
             }
             let new = Entry::new(name, location, username, password);
-            match manager::add(new, file) {
-                Ok(_) => println!("Entry successfully added"),
-                Err(e) => return Err(e),
-            };
+            manager::add(new, file)?;
+
+            println!("Entry successfully added");
         }
         Action::Remove { name, file } => {
             if !manager::entry_exists(&name, file.clone())? {
-                return Err(anyhow!("Entry does not exist. No changes made"));
+                return Err(anyhow!(ENTRY_DOESNT_EXIST));
             }
 
             manager::remove(&name, file)?;
@@ -46,7 +49,7 @@ fn main() -> Result<()> {
         Action::List { file } => manager::list(file)?,
         Action::Edit { name, file } => {
             if !manager::entry_exists(&name, file.clone())? {
-                return Err(anyhow!("Entry not found. No changes made"));
+                return Err(anyhow!(ENTRY_DOESNT_EXIST));
             }
 
             let new_name = get_input::<String>("Enter a new name: ").trim().to_string();
@@ -65,20 +68,27 @@ fn main() -> Result<()> {
         }
         Action::Show { name, file } => match manager::show(name, file) {
             Ok(()) => {}
-            Err(e) if e.to_string() == *"Entry does not exist" => eprintln!("{e}"),
+            Err(e) if e.to_string() == ENTRY_DOESNT_EXIST => eprintln!("{e}"),
             Err(e) => return Err(e),
         },
         Action::Notes { subcmd } => match subcmd {
             NotesSubcmd::Add { note, entry, file } => {
                 if !entry_exists(&entry, file.clone())? {
-                    return Err(anyhow!("Entry does not exist"));
+                    return Err(anyhow!(ENTRY_DOESNT_EXIST));
                 }
 
                 notes::add(&entry, note, file)?;
             }
+            NotesSubcmd::Remove { entry, id, file } => {
+                if !entry_exists(&entry, file.clone())? {
+                    return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                }
+
+                notes::remove(&entry, id, file)?;
+            }
             NotesSubcmd::List { entry, file } => {
                 if !entry_exists(&entry, file.clone())? {
-                    return Err(anyhow!("Entry does note exist"));
+                    return Err(anyhow!(ENTRY_DOESNT_EXIST));
                 }
 
                 notes::list(&entry, file)?;

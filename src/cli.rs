@@ -127,4 +127,20 @@ pub enum NotesSubcmd {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
+    /// Remove a note from a given entry
+    #[clap(alias("rm"))]
+    Remove {
+        /// The entry to remove the note from
+        #[clap(short, long)]
+        entry: String,
+        /// The id of the note to remove.
+        /// Can be seen with the `notes list` command
+        #[clap(short, long)]
+        id: usize,
+        /// Path to the entries file to use
+        ///
+        /// Must be a vali JSON file
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
 }

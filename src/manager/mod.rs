@@ -1,3 +1,4 @@
+pub mod errors;
 pub mod notes;
 
 use anyhow::{anyhow, Result};
@@ -9,6 +10,8 @@ use std::{
     io::{Seek, SeekFrom},
     path::PathBuf,
 };
+
+use errors::{ENTRY_DOESNT_EXIST, ENTRY_EXISTS};
 
 /// Struct to serialise & deserialise JSON to & from
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
@@ -51,7 +54,7 @@ pub fn add(new: Entry, path: Option<PathBuf>) -> Result<()> {
 
     let mut entries = get_entries(&file)?;
     if entries.iter().any(|entry| entry.name == new.name) {
-        return Err(anyhow!("Entry already exists"));
+        return Err(anyhow!(ENTRY_EXISTS));
     }
 
     entries.push(new);
@@ -96,7 +99,7 @@ pub fn show(name: String, file: Option<PathBuf>) -> Result<()> {
         }
     });
     if !shown {
-        Err(anyhow!("Entry does not exist"))
+        Err(anyhow!(ENTRY_DOESNT_EXIST))
     } else {
         Ok(())
     }
@@ -168,7 +171,7 @@ pub fn edit(name: &str, new: Entry, file: Option<PathBuf>) -> Result<()> {
     if edited {
         Ok(())
     } else {
-        Err(anyhow!("Entry does not exist"))
+        Err(anyhow!(ENTRY_DOESNT_EXIST))
     }
 }
 
