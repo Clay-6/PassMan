@@ -14,7 +14,7 @@ To install via cargo, you will need [rustup](https://rustup.rs) and the latest s
 Then, run
 
 ```shell
-cargo install passman
+cargo install pass-man
 ```
 
 ### Manual
