@@ -1,5 +1,5 @@
 [package]
-name = "passman"
+name = "pass-man"
 version = "0.6.1"
 edition = "2021"
 repository = "https://github.com/Clay-6/PassMan"
