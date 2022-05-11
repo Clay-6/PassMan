@@ -35,6 +35,7 @@ pub fn list(entry_name: &str, path: Option<PathBuf>) -> Result<()> {
 
     for entry in entries {
         if entry.name == entry_name {
+            println!("Notes for {}", entry.name);
             for note in entry.notes {
                 println!("{}", note);
             }
