@@ -33,12 +33,13 @@ pub fn list(entry_name: &str, path: Option<PathBuf>) -> Result<()> {
     let file = OpenOptions::new().read(true).open(path)?;
     let entries = get_entries(&file)?;
 
-    for (id, entry) in entries.iter().enumerate() {
+    for entry in entries {
         if entry.name == entry_name {
             println!("Notes for {}:", entry.name);
-            for note in &entry.notes {
+            for (id, note) in entry.notes.iter().enumerate() {
                 println!("{id}: {note}");
             }
+            break;
         }
     }
 
@@ -57,12 +58,41 @@ pub fn remove(entry_name: &str, note_id: usize, path: Option<PathBuf>) -> Result
             } else {
                 entry.notes.remove(note_id);
             }
+            break;
         }
     }
 
     file.set_len(0)?;
     file.seek(SeekFrom::Start(0))?;
 
+    serde_json::to_writer_pretty(file, &entries)?;
+
+    Ok(())
+}
+
+pub fn edit(
+    entry_name: &str,
+    note_id: usize,
+    new_note: String,
+    path: Option<PathBuf>,
+) -> Result<()> {
+    let path = path.unwrap_or_else(default_path);
+    let mut file = OpenOptions::new().read(true).write(true).open(path)?;
+    let mut entries = get_entries(&file)?;
+
+    for entry in &mut entries {
+        if entry.name == entry_name {
+            if note_id >= entry.notes.len() {
+                return Err(anyhow!(ENTRY_ID_OOB));
+            } else {
+                entry.notes[note_id] = new_note;
+            }
+            break;
+        }
+    }
+
+    file.set_len(0)?;
+    file.seek(SeekFrom::Start(0))?;
     serde_json::to_writer_pretty(file, &entries)?;
 
     Ok(())

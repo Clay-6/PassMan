@@ -78,6 +78,7 @@ fn main() -> Result<()> {
                 }
 
                 notes::add(&entry, note, file)?;
+                println!("Note successfully added");
             }
             NotesSubcmd::Remove { entry, id, file } => {
                 if !entry_exists(&entry, file.clone())? {
@@ -85,6 +86,20 @@ fn main() -> Result<()> {
                 }
 
                 notes::remove(&entry, id, file)?;
+                println!("Note successfully edited");
+            }
+            NotesSubcmd::Edit {
+                entry,
+                id,
+                new_note,
+                file,
+            } => {
+                if !entry_exists(&entry, file.clone())? {
+                    return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                }
+
+                notes::edit(&entry, id, new_note, file)?;
+                println!("Note successfully edited");
             }
             NotesSubcmd::List { entry, file } => {
                 if !entry_exists(&entry, file.clone())? {

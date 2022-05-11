@@ -114,19 +114,6 @@ pub enum NotesSubcmd {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
-    /// List the notes for a given entry.
-    /// Can also use `ls`
-    #[clap(alias("ls"))]
-    List {
-        /// The entry to show the notes for
-        #[clap(short, long)]
-        entry: String,
-        /// Path to the file to use
-        ///
-        /// Must be a valid JSON file
-        #[clap(short, long)]
-        file: Option<PathBuf>,
-    },
     /// Remove a note from a given entry
     #[clap(alias("rm"))]
     Remove {
@@ -139,7 +126,38 @@ pub enum NotesSubcmd {
         id: usize,
         /// Path to the entries file to use
         ///
-        /// Must be a vali JSON file
+        /// Must be a valid JSON file
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
+    /// Edit the note with the given id
+    Edit {
+        /// The entry with the note to edit
+        #[clap(short, long)]
+        entry: String,
+        /// The i of the note to edit
+        /// Can be seen with the `notes list` command
+        #[clap(short, long)]
+        id: usize,
+        /// The note to replace the old one with
+        #[clap(short, long)]
+        new_note: String,
+        /// Path to the entries file to use
+        ///
+        /// Must be a valid JSON file
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
+    /// List the notes for a given entry.
+    /// Can also use `ls`
+    #[clap(alias("ls"))]
+    List {
+        /// The entry to show the notes for
+        #[clap(short, long)]
+        entry: String,
+        /// Path to the file to use
+        ///
+        /// Must be a valid JSON file
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
