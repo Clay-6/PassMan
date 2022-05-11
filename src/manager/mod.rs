@@ -1,3 +1,5 @@
+pub mod notes;
+
 use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 
@@ -15,6 +17,7 @@ pub struct Entry {
     username: String,
     password: Vec<u8>,
     location: String,
+    notes: Vec<String>,
 }
 
 impl Entry {
@@ -25,6 +28,7 @@ impl Entry {
             username,
             password,
             location,
+            notes: Vec::new(),
         }
     }
 

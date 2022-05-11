@@ -91,4 +91,26 @@ pub enum Action {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
+    Notes {
+        #[clap(subcommand)]
+        subcmd: NotesSubcmd,
+    },
+}
+
+#[derive(Debug, Subcommand)]
+pub enum NotesSubcmd {
+    Add {
+        #[clap(short, long)]
+        note: String,
+        #[clap(short, long)]
+        entry: String,
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
+    List {
+        #[clap(short, long)]
+        entry: String,
+        #[clap(short, long)]
+        file: Option<PathBuf>,
+    },
 }

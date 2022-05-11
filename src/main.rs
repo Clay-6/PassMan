@@ -5,8 +5,8 @@ mod manager;
 use anyhow::{anyhow, Result};
 use clap::Parser;
 
-use cli::{Action, Args};
-use manager::Entry;
+use cli::{Action, Args, NotesSubcmd};
+use manager::{entry_exists, notes, Entry};
 
 fn main() -> Result<()> {
     let args = Args::parse();
@@ -67,6 +67,22 @@ fn main() -> Result<()> {
             Ok(()) => {}
             Err(e) if e.to_string() == *"Entry does not exist" => eprintln!("{e}"),
             Err(e) => return Err(e),
+        },
+        Action::Notes { subcmd } => match subcmd {
+            NotesSubcmd::Add { note, entry, file } => {
+                if !entry_exists(&entry, file.clone())? {
+                    return Err(anyhow!("Entry does not exist"));
+                }
+
+                notes::add(&entry, note, file)?;
+            }
+            NotesSubcmd::List { entry, file } => {
+                if !entry_exists(&entry, file.clone())? {
+                    return Err(anyhow!("Entry does note exist"));
+                }
+
+                notes::list(&entry, file)?;
+            }
         },
     }
 
