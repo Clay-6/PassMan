@@ -20,4 +20,4 @@ cargo install passman
 ### Manual
 
 Alternatively, you can download the [latest release from GitHub](https://github.com/Clay-6/PassMan/releases)
-and add the .exe path to your $PATH environment variable
+and add the .exe path to your `PATH` environment variable
