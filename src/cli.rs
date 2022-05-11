@@ -91,6 +91,7 @@ pub enum Action {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
+    /// Work with entries' notes
     Notes {
         #[clap(subcommand)]
         subcmd: NotesSubcmd,
@@ -99,17 +100,28 @@ pub enum Action {
 
 #[derive(Debug, Subcommand)]
 pub enum NotesSubcmd {
+    /// Add a note to a given file
     Add {
+        /// The note to be added
         #[clap(short, long)]
         note: String,
+        /// The enrty to add the note to
         #[clap(short, long)]
         entry: String,
+        /// Path to the file to use
+        ///
+        /// Must be a valid JSON file
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
+    /// List the notes for a given entry
     List {
+        /// The entry to show the notes for
         #[clap(short, long)]
         entry: String,
+        /// Path to the file to use
+        ///
+        /// Must be a valid JSON file
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
