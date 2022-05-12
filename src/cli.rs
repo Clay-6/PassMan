@@ -105,7 +105,6 @@ pub enum NotesSubcmd {
     /// Add a note to a given file
     Add {
         /// The note to be added
-        #[clap(short, long)]
         note: String,
         /// The enrty to add the note to
         #[clap(short, long)]
@@ -124,7 +123,6 @@ pub enum NotesSubcmd {
         entry: String,
         /// The id of the note to remove.
         /// Can be seen with the `notes list` command
-        #[clap(short, long)]
         id: usize,
         /// Path to the entries file to use
         ///
@@ -139,7 +137,6 @@ pub enum NotesSubcmd {
         entry: String,
         /// The i of the note to edit
         /// Can be seen with the `notes list` command
-        #[clap(short, long)]
         id: usize,
         /// The note to replace the old one with
         #[clap(short, long)]
@@ -155,7 +152,6 @@ pub enum NotesSubcmd {
     #[clap(alias("ls"))]
     List {
         /// The entry to show the notes for
-        #[clap(short, long)]
         entry: String,
         /// Path to the file to use
         ///
