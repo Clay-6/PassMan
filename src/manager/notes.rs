@@ -37,7 +37,7 @@ pub fn list(entry_name: &str, path: Option<PathBuf>) -> Result<()> {
         if entry.name == entry_name {
             println!("Notes for {}:", entry.name);
             for (id, note) in entry.notes.iter().enumerate() {
-                println!("{id}: {note}");
+                println!("[{id}] {note}");
             }
             break;
         }
