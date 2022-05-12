@@ -1,7 +1,6 @@
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
-/// Command-line password manager with all the functionality you need
 #[derive(Debug, Parser)]
 #[clap(version, about, long_about = None)]
 pub struct Args {
