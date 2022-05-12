@@ -1,6 +1,6 @@
 [package]
 name = "pass-man"
-version = "0.6.2"
+version = "0.6.3"
 edition = "2021"
 repository = "https://github.com/Clay-6/PassMan"
 license = "MIT OR Apache-2.0"
