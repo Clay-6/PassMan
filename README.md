@@ -21,3 +21,11 @@ cargo install pass-man
 
 Alternatively, you can download the [latest release from GitHub](https://github.com/Clay-6/PassMan/releases/latest)
 and add the .exe path to your `PATH` environment variable
+
+## Usage
+
+Use `passman help` or `passman --help` to see the available commands,  or use `passman help <command>` or 
+`passman <command> --help` to get help for a specific command
+
+If you get an error saying `No such file or directory`, manually create the file yourself. For example, create a default
+file with `touch $HOME/.passman.json`
