@@ -24,7 +24,7 @@ and add the .exe path to your `PATH` environment variable
 
 ## Usage
 
-Use `passman help` or `passman --help` to see the available commands,  or use `passman help <command>` or 
+Use `passman help` or `passman --help` to see the available commands,  or use `passman help <command>` or
 `passman <command> --help` to get help for a specific command
 
 If you get an error saying `No such file or directory`, manually create the file yourself. For example, create a default
