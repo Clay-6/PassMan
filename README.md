@@ -29,3 +29,11 @@ Use `passman help` or `passman --help` to see the available commands,  or use `p
 
 If you get an error saying `No such file or directory`, manually create the file yourself. For example, create a default
 file with `touch $HOME/.passman.json`
+
+## Building from Source
+
+First, make sure you have [rustup](https://rustup.rs) installed & the latest stable version of Rust
+(via `rustup install stable`).
+
+`git clone` the repository & `cd` into it, then run `cargo build` for a debug build, or `cargo build --release`
+for a release build
