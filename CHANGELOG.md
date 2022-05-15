@@ -1,4 +1,6 @@
-# PassMan v0.6.3
+# Changelog
+
+## v0.6.3
 
 * Changed some arguments to `notes` commands to use positional arguments rather than flags
 where appropriate
