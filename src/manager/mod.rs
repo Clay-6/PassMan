@@ -210,13 +210,9 @@ fn default_path() -> PathBuf {
 
 impl Display for Entry {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{} [{}]:\n\tUsername: {}\n\tPassword: {}",
-            self.name,
-            self.location,
-            self.username,
-            self.show_password(),
-        )
+        writeln!(f, "{} [for {}]", self.name, self.location)?;
+        writeln!(f, "   Username: {}", self.username)?;
+        writeln!(f, "   Password: {}", self.show_password())?;
+        write!(f, "   Contains {} notes", self.notes.len())
     }
 }
