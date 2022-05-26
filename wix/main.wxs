@@ -62,7 +62,7 @@
     <Product
         Id='*'
         Name='pass-man'
-        UpgradeCode='ADE07D50-0A89-4B9A-8C11-01DBFDF8C7B2'
+        UpgradeCode='4E3F55C8-FD34-435D-A94C-8D7691F92DA3'
         Manufacturer='Clayman'
         Language='1033'
         Codepage='1252'
@@ -70,7 +70,7 @@
 
         <Package Id='*'
             Keywords='Installer'
-            Description='Password manager with support for basic operations &amp; notes'
+            Description='Command-line password manager with support for basic operations &amp; notes'
             Manufacturer='Clayman'
             InstallerVersion='450'
             Languages='1033'
@@ -111,7 +111,7 @@
                     -->
 
                     <Directory Id='Bin' Name='bin'>
-                        <Component Id='Path' Guid='DA79A486-CEE6-4187-B387-C6B48881C845' KeyPath='yes'>
+                        <Component Id='Path' Guid='EF79502B-2552-4142-80EC-A89B208975FA' KeyPath='yes'>
                             <Environment
                                 Id='PATH'
                                 Name='PATH'
