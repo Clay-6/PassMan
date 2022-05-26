@@ -17,6 +17,11 @@ Then, run
 cargo install pass-man
 ```
 
+### Windows Installer
+
+Download the latest installer from the [GitHub release](https://github.com/Clay-6/PassMan/releases/latest) and run the .msi file.
+Necessary changes to your `PATH` environment variable will be made by the installer
+
 ### Manual
 
 Alternatively, you can download the [latest release from GitHub](https://github.com/Clay-6/PassMan/releases/latest)
