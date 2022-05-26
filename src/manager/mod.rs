@@ -177,7 +177,11 @@ pub fn edit(name: &str, new: Entry, file: Option<PathBuf>) -> Result<()> {
 
 pub fn entry_exists(search_name: &str, file: Option<PathBuf>) -> Result<bool> {
     let path = file.unwrap_or_else(default_path);
-    let file = OpenOptions::new().read(true).open(path)?;
+    let file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .read(true)
+        .open(path)?;
 
     let entries = get_entries(&file)?;
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.5
+
+* Fixed `No such file or directory` error
+
 ## v0.6.4
 
 * `show` command now shows the number of notes for an entry

@@ -9,7 +9,8 @@ Get help by using the `passman help` or `passman --help` commands
 
 ### Via cargo
 
-To install via cargo, you will need [rustup](https://rustup.rs) and the latest stable compiler via `rustup install stable`
+To install via cargo, you will need [rustup](https://rustup.rs) and the latest stable compiler via
+`rustup install stable`
 
 Then, run
 
@@ -19,8 +20,8 @@ cargo install pass-man
 
 ### Windows Installer
 
-Download the latest installer from the [GitHub release](https://github.com/Clay-6/PassMan/releases/latest) and run the .msi file.
-Necessary changes to your `PATH` environment variable will be made by the installer
+Download the latest installer from the [GitHub release](https://github.com/Clay-6/PassMan/releases/latest)
+and run the .msi file. Necessary changes to your `PATH` environment variable will be made by the installer
 
 ### Manual
 
@@ -32,8 +33,8 @@ Alternatively, you can download the [latest release from GitHub](https://github.
 Use `passman help` or `passman --help` to see the available commands,  or use `passman help <command>` or
 `passman <command> --help` to get help for a specific command
 
-If you get an error saying `No such file or directory`, manually create the file yourself. For example, create a default
-file with `touch $HOME/.passman.json`
+If you get an error saying `No such file or directory`, manually create the passwords file yourself.
+For example, create a defaultfile with `touch ~/.passman.json`
 
 ## Building from Source
 
