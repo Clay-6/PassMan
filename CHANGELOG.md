@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.7.0
+
+* Added ability to change default file path
+
 ## v0.6.5
 
 * Fixed `No such file or directory` error
