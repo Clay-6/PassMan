@@ -97,6 +97,11 @@ pub enum Action {
         #[clap(subcommand)]
         subcmd: NotesSubcmd,
     },
+    /// Edit configuration options
+    Config {
+        #[clap(subcommand)]
+        option: ConfigField,
+    },
 }
 
 #[derive(Debug, Subcommand)]
@@ -158,4 +163,10 @@ pub enum NotesSubcmd {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
+}
+
+#[derive(Debug, Subcommand)]
+pub enum ConfigField {
+    /// Edit the default file used by PassMan
+    DefaultFile { path: PathBuf },
 }

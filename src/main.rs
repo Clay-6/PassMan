@@ -1,11 +1,13 @@
 mod cli;
+mod config;
 mod generator;
 mod manager;
 
 use anyhow::{anyhow, Result};
 use clap::Parser;
 
-use cli::{Action, Args, NotesSubcmd};
+use cli::{Action, Args, ConfigField, NotesSubcmd};
+use config::Config;
 use manager::{
     entry_exists,
     errors::{ENTRY_DOESNT_EXIST, ENTRY_EXISTS},
@@ -14,6 +16,7 @@ use manager::{
 
 fn main() -> Result<()> {
     let args = Args::parse();
+    let mut config = confy::load::<Config>("PassMan")?;
     match args.action {
         Action::Generate {
             length,
@@ -30,7 +33,11 @@ fn main() -> Result<()> {
             password,
             file,
         } => {
-            if manager::entry_exists(&name, file.clone())? {
+            let file = match file {
+                Some(path) => path,
+                None => config.file,
+            };
+            if manager::entry_exists(&name, &file)? {
                 return Err(anyhow!(ENTRY_EXISTS));
             }
             let new = Entry::new(name, location, username, password);
@@ -39,16 +46,30 @@ fn main() -> Result<()> {
             println!("Entry successfully added");
         }
         Action::Remove { name, file } => {
-            if !manager::entry_exists(&name, file.clone())? {
+            let file = match file {
+                Some(path) => path,
+                None => config.file,
+            };
+            if !manager::entry_exists(&name, &file)? {
                 return Err(anyhow!(ENTRY_DOESNT_EXIST));
             }
 
             manager::remove(&name, file)?;
             println!("Entry `{name}` successfully removed");
         }
-        Action::List { file } => manager::list(file)?,
+        Action::List { file } => {
+            let file = match file {
+                Some(path) => path,
+                None => config.file,
+            };
+            manager::list(file)?
+        }
         Action::Edit { name, file } => {
-            if !manager::entry_exists(&name, file.clone())? {
+            let file = match file {
+                Some(path) => path,
+                None => config.file,
+            };
+            if !manager::entry_exists(&name, &file)? {
                 return Err(anyhow!(ENTRY_DOESNT_EXIST));
             }
 
@@ -66,14 +87,24 @@ fn main() -> Result<()> {
 
             manager::edit(&name, new_entry, file)?;
         }
-        Action::Show { name, file } => match manager::show(name, file) {
-            Ok(()) => {}
-            Err(e) if e.to_string() == ENTRY_DOESNT_EXIST => eprintln!("{e}"),
-            Err(e) => return Err(e),
-        },
+        Action::Show { name, file } => {
+            let file = match file {
+                Some(path) => path,
+                None => config.file,
+            };
+            match manager::show(name, file) {
+                Ok(()) => {}
+                Err(e) if e.to_string() == ENTRY_DOESNT_EXIST => eprintln!("{e}"),
+                Err(e) => return Err(e),
+            }
+        }
         Action::Notes { subcmd } => match subcmd {
             NotesSubcmd::Add { note, entry, file } => {
-                if !entry_exists(&entry, file.clone())? {
+                let file = match file {
+                    Some(path) => path,
+                    None => config.file,
+                };
+                if !entry_exists(&entry, &file)? {
                     return Err(anyhow!(ENTRY_DOESNT_EXIST));
                 }
 
@@ -81,7 +112,11 @@ fn main() -> Result<()> {
                 println!("Note successfully added");
             }
             NotesSubcmd::Remove { entry, id, file } => {
-                if !entry_exists(&entry, file.clone())? {
+                let file = match file {
+                    Some(path) => path,
+                    None => config.file,
+                };
+                if !entry_exists(&entry, &file)? {
                     return Err(anyhow!(ENTRY_DOESNT_EXIST));
                 }
 
@@ -94,7 +129,11 @@ fn main() -> Result<()> {
                 new_note,
                 file,
             } => {
-                if !entry_exists(&entry, file.clone())? {
+                let file = match file {
+                    Some(path) => path,
+                    None => config.file,
+                };
+                if !entry_exists(&entry, &file)? {
                     return Err(anyhow!(ENTRY_DOESNT_EXIST));
                 }
 
@@ -102,11 +141,21 @@ fn main() -> Result<()> {
                 println!("Note successfully edited");
             }
             NotesSubcmd::List { entry, file } => {
-                if !entry_exists(&entry, file.clone())? {
+                let file = match file {
+                    Some(path) => path,
+                    None => config.file,
+                };
+                if !entry_exists(&entry, &file)? {
                     return Err(anyhow!(ENTRY_DOESNT_EXIST));
                 }
 
                 notes::list(&entry, file)?;
+            }
+        },
+        Action::Config { option } => match option {
+            ConfigField::DefaultFile { path } => {
+                config.file = path;
+                confy::store("PassMan", config)?;
             }
         },
     }

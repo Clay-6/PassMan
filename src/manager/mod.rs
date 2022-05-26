@@ -44,8 +44,7 @@ impl Entry {
     }
 }
 
-pub fn add(new: Entry, path: Option<PathBuf>) -> Result<()> {
-    let path = path.unwrap_or_else(default_path);
+pub fn add(new: Entry, path: PathBuf) -> Result<()> {
     let mut file = fs::OpenOptions::new()
         .create(true)
         .read(true)
@@ -66,8 +65,7 @@ pub fn add(new: Entry, path: Option<PathBuf>) -> Result<()> {
     Ok(())
 }
 
-pub fn remove(name: &str, file: Option<PathBuf>) -> Result<()> {
-    let path = file.unwrap_or_else(default_path);
+pub fn remove(name: &str, path: PathBuf) -> Result<()> {
     let mut file = fs::OpenOptions::new().read(true).write(true).open(path)?;
 
     let mut entries = get_entries(&file)?;
@@ -85,8 +83,7 @@ pub fn remove(name: &str, file: Option<PathBuf>) -> Result<()> {
     Ok(())
 }
 
-pub fn show(name: String, file: Option<PathBuf>) -> Result<()> {
-    let path = file.unwrap_or_else(default_path);
+pub fn show(name: String, path: PathBuf) -> Result<()> {
     let file = fs::OpenOptions::new().read(true).open(path)?;
 
     let entries = get_entries(&file)?;
@@ -105,8 +102,7 @@ pub fn show(name: String, file: Option<PathBuf>) -> Result<()> {
     }
 }
 
-pub fn list(path: Option<PathBuf>) -> Result<()> {
-    let path = path.unwrap_or_else(default_path);
+pub fn list(path: PathBuf) -> Result<()> {
     let file = OpenOptions::new().read(true).open(path)?;
 
     let entries = get_entries(&file)?;
@@ -118,8 +114,7 @@ pub fn list(path: Option<PathBuf>) -> Result<()> {
     Ok(())
 }
 
-pub fn edit(name: &str, new: Entry, file: Option<PathBuf>) -> Result<()> {
-    let path = file.unwrap_or_else(default_path);
+pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     let mut file = fs::OpenOptions::new().read(true).write(true).open(path)?;
 
     let entries = get_entries(&file)?;
@@ -175,8 +170,7 @@ pub fn edit(name: &str, new: Entry, file: Option<PathBuf>) -> Result<()> {
     }
 }
 
-pub fn entry_exists(search_name: &str, file: Option<PathBuf>) -> Result<bool> {
-    let path = file.unwrap_or_else(default_path);
+pub fn entry_exists(search_name: &str, path: &PathBuf) -> Result<bool> {
     let file = OpenOptions::new()
         .write(true)
         .create(true)
@@ -201,15 +195,6 @@ fn get_entries(file: &fs::File) -> Result<Vec<Entry>> {
         Err(e) => return Err(e.into()),
     };
     Ok(entries)
-}
-
-fn default_path() -> PathBuf {
-    home::home_dir()
-        .map(|mut path| {
-            path.push(".passman.json");
-            path
-        })
-        .expect("Failed to set default file path")
 }
 
 impl Display for Entry {
