@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.8.0
+
+* Added `copy` flag to `show` to allow for
+copying a password to the clipboard
+* Added `interactive` flag to `add` command
+
 ## v0.7.0
 
 * Added ability to change default file path
