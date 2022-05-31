@@ -84,13 +84,13 @@ pub fn remove(name: &str, path: PathBuf) -> Result<()> {
     Ok(())
 }
 
-pub fn show(name: String, path: PathBuf, copy_passwd: bool) -> Result<()> {
+pub fn show(name: &str, path: PathBuf, copy_passwd: bool) -> Result<()> {
     let file = fs::OpenOptions::new().read(true).open(path)?;
 
     let entries = get_entries(&file)?;
 
     for entry in entries {
-        if entry.name == name {
+        if entry.name.to_lowercase() == name.to_lowercase() {
             println!("{entry}");
             if copy_passwd {
                 use copypasta::ClipboardContext;

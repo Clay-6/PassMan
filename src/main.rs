@@ -92,12 +92,12 @@ fn main() -> Result<()> {
                 Some(path) => path,
                 None => config.file,
             };
-            
+
             if !entry_exists(&name, &file)? {
                 return Err(anyhow!(ENTRY_DOESNT_EXIST));
             }
 
-            manager::show(name, file, copy)?;
+            manager::show(&name, file, copy)?;
         }
         Action::Notes { subcmd } => match subcmd {
             NotesSubcmd::Add { note, entry, file } => {
