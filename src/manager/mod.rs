@@ -2,6 +2,7 @@ pub mod errors;
 pub mod notes;
 
 use anyhow::{anyhow, Result};
+use copypasta::ClipboardProvider;
 use serde::{Deserialize, Serialize};
 
 use std::{
@@ -83,23 +84,25 @@ pub fn remove(name: &str, path: PathBuf) -> Result<()> {
     Ok(())
 }
 
-pub fn show(name: String, path: PathBuf) -> Result<()> {
+pub fn show(name: String, path: PathBuf, copy_passwd: bool) -> Result<()> {
     let file = fs::OpenOptions::new().read(true).open(path)?;
 
     let entries = get_entries(&file)?;
-    let mut shown = false;
 
-    entries.iter().for_each(|entry| {
-        if entry.name.to_lowercase() == name.to_lowercase() {
+    for entry in entries {
+        if entry.name == name {
             println!("{entry}");
-            shown = true;
+            if copy_passwd {
+                use copypasta::ClipboardContext;
+
+                let mut ctx = ClipboardContext::new().expect("Failed to create clipboard context");
+                ctx.set_contents(entry.show_password())
+                    .expect("Failed to copy password");
+            }
         }
-    });
-    if !shown {
-        Err(anyhow!(ENTRY_DOESNT_EXIST))
-    } else {
-        Ok(())
     }
+
+    Ok(())
 }
 
 pub fn list(path: PathBuf) -> Result<()> {

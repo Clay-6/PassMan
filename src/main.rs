@@ -87,16 +87,17 @@ fn main() -> Result<()> {
 
             manager::edit(&name, new_entry, file)?;
         }
-        Action::Show { name, file } => {
+        Action::Show { name, file, copy } => {
             let file = match file {
                 Some(path) => path,
                 None => config.file,
             };
-            match manager::show(name, file) {
-                Ok(()) => {}
-                Err(e) if e.to_string() == ENTRY_DOESNT_EXIST => eprintln!("{e}"),
-                Err(e) => return Err(e),
+            
+            if !entry_exists(&name, &file)? {
+                return Err(anyhow!(ENTRY_DOESNT_EXIST));
             }
+
+            manager::show(name, file, copy)?;
         }
         Action::Notes { subcmd } => match subcmd {
             NotesSubcmd::Add { note, entry, file } => {

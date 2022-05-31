@@ -77,6 +77,9 @@ pub enum Action {
         /// Must be a valid JSON file
         #[clap(short, long)]
         file: Option<PathBuf>,
+        /// Copy the entry's password to your clipboard
+        #[clap(short, long)]
+        copy: bool,
     },
     /// Edit a password entry
     ///
