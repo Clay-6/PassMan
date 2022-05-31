@@ -24,25 +24,32 @@ pub enum Action {
         special: bool,
     },
     /// Add a password entry
+    ///
+    /// Will panic if `interactive` flag is not set
+    /// & not all other fields (except file) are provided
     Add {
         /// The name of the password entry
-        name: String,
+        name: Option<String>,
         /// The username to be saved
         #[clap(short, long)]
-        username: String,
+        username: Option<String>,
         /// The password to be saved
         #[clap(short, long)]
-        password: String,
+        password: Option<String>,
         /// Where the password will be used
         ///
         /// e.g. The website URL
         #[clap(short, long)]
-        location: String,
+        location: Option<String>,
         /// Path to a specific file
         ///
         /// Must be a valid JSON file
         #[clap(short, long)]
         file: Option<PathBuf>,
+        /// Create the new entry interactively
+        /// instead of through flags
+        #[clap(short, long)]
+        interactive: bool,
     },
     /// Remove a password entry. Can also use `rm`
     #[clap(alias("rm"))]

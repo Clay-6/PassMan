@@ -17,11 +17,11 @@ use errors::{ENTRY_DOESNT_EXIST, ENTRY_EXISTS};
 /// Struct to serialise & deserialise JSON to & from
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Entry {
-    name: String,
-    username: String,
-    password: Vec<u8>,
-    location: String,
-    notes: Vec<String>,
+    pub(crate) name: String,
+    pub(crate) username: String,
+    pub(crate) password: Vec<u8>,
+    pub(crate) location: String,
+    pub(crate) notes: Vec<String>,
 }
 
 impl Entry {

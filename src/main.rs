@@ -32,15 +32,32 @@ fn main() -> Result<()> {
             username,
             password,
             file,
+            interactive,
         } => {
             let file = match file {
                 Some(path) => path,
                 None => config.file,
             };
-            if manager::entry_exists(&name, &file)? {
+
+            let new = if !interactive {
+                Entry::new(
+                    name.expect("No name provided"),
+                    location.expect("No location provided"),
+                    username.expect("No username provided"),
+                    password.expect("No password provided"),
+                )
+            } else {
+                let name = get_input::<String>("Enter a name: ").trim().to_string();
+                let location = get_input::<String>("Enter a location: ").trim().to_string();
+                let username = get_input::<String>("Enter a username: ").trim().to_string();
+                let password = get_input("Enter a password: ");
+                Entry::new(name, location, username, password)
+            };
+
+            if manager::entry_exists(&new.name, &file)? {
                 return Err(anyhow!(ENTRY_EXISTS));
             }
-            let new = Entry::new(name, location, username, password);
+
             manager::add(new, file)?;
 
             println!("Entry successfully added");
