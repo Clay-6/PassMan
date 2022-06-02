@@ -133,7 +133,16 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     let mut file = fs::OpenOptions::new().read(true).write(true).open(path)?;
 
     let entries = get_entries(&file)?;
-    let mut edited = false;
+
+    if !entries
+        .iter()
+        .any(|entry| entry.name.to_lowercase() == name.to_lowercase())
+    {
+        return Err(anyhow!(ManagerError::EntryDoesntExist {
+            name: name.to_string()
+        }));
+    }
+
     let entries: Vec<Entry> = entries
         .iter()
         .map(|entry| {
@@ -159,8 +168,6 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
                     &new.location
                 };
 
-                edited = true;
-
                 Entry::new(
                     new_name.clone(),
                     new_location.clone(),
@@ -177,14 +184,7 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     file.seek(SeekFrom::Start(0))?;
 
     serde_json::to_writer(&mut file, &entries)?;
-
-    if edited {
-        Ok(())
-    } else {
-        Err(anyhow!(ManagerError::EntryDoesntExist {
-            name: name.to_string()
-        }))
-    }
+    Ok(())
 }
 
 pub fn entry_exists(search_name: &str, path: &PathBuf) -> Result<bool> {

@@ -12,10 +12,18 @@ pub fn add(name: &str, note: String, path: PathBuf) -> Result<()> {
     let mut file = OpenOptions::new().write(true).read(true).open(path)?;
     let mut entries = get_entries(&file)?;
 
-    for entry in &mut entries {
-        if entry.name == name {
-            entry.notes.push(note);
-            break;
+    if !entries
+        .iter()
+        .any(|entry| entry.name.to_lowercase() == name.to_lowercase())
+    {
+        return Err(anyhow!(ManagerError::EntryDoesntExist {
+            name: name.to_string()
+        }));
+    }
+
+    for entry in entries.iter_mut() {
+        if entry.name.to_lowercase() == name.to_lowercase() {
+            entry.notes.push(note.clone());
         }
     }
 
@@ -31,13 +39,21 @@ pub fn list(entry_name: &str, path: PathBuf) -> Result<()> {
     let file = OpenOptions::new().read(true).open(path)?;
     let entries = get_entries(&file)?;
 
+    if !entries
+        .iter()
+        .any(|entry| entry.name.to_lowercase() == entry_name.to_lowercase())
+    {
+        return Err(anyhow!(ManagerError::EntryDoesntExist {
+            name: entry_name.to_string()
+        }));
+    }
+
     for entry in entries {
-        if entry.name == entry_name {
+        if entry.name.to_lowercase() == entry_name.to_lowercase() {
             println!("Notes for {}:", entry.name);
-            for (id, note) in entry.notes.iter().enumerate() {
-                println!("[{id}] {note}");
+            for (idx, note) in entry.notes.iter().enumerate() {
+                println!("{idx}: {note}");
             }
-            break;
         }
     }
 
@@ -47,6 +63,15 @@ pub fn list(entry_name: &str, path: PathBuf) -> Result<()> {
 pub fn remove(entry_name: &str, note_id: usize, path: PathBuf) -> Result<()> {
     let mut file = OpenOptions::new().read(true).write(true).open(path)?;
     let mut entries = get_entries(&file)?;
+
+    if !entries
+        .iter()
+        .any(|entry| entry.name.to_lowercase() == entry_name.to_lowercase())
+    {
+        return Err(anyhow!(ManagerError::EntryDoesntExist {
+            name: entry_name.to_string()
+        }));
+    }
 
     for entry in &mut entries {
         if entry.name == entry_name {
@@ -73,6 +98,15 @@ pub fn remove(entry_name: &str, note_id: usize, path: PathBuf) -> Result<()> {
 pub fn edit(entry_name: &str, note_id: usize, new_note: String, path: PathBuf) -> Result<()> {
     let mut file = OpenOptions::new().read(true).write(true).open(path)?;
     let mut entries = get_entries(&file)?;
+
+    if !entries
+        .iter()
+        .any(|entry| entry.name.to_lowercase() == entry_name.to_lowercase())
+    {
+        return Err(anyhow!(ManagerError::EntryDoesntExist {
+            name: entry_name.to_string()
+        }));
+    }
 
     for entry in &mut entries {
         if entry.name == entry_name {
