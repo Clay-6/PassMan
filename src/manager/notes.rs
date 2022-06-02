@@ -22,7 +22,7 @@ pub fn add(name: &str, note: String, path: PathBuf) -> Result<()> {
     file.set_len(0)?;
     file.seek(SeekFrom::Start(0))?;
 
-    serde_json::to_writer_pretty(file, &entries)?;
+    serde_json::to_writer(file, &entries)?;
 
     Ok(())
 }
@@ -65,7 +65,7 @@ pub fn remove(entry_name: &str, note_id: usize, path: PathBuf) -> Result<()> {
     file.set_len(0)?;
     file.seek(SeekFrom::Start(0))?;
 
-    serde_json::to_writer_pretty(file, &entries)?;
+    serde_json::to_writer(file, &entries)?;
 
     Ok(())
 }
@@ -91,7 +91,7 @@ pub fn edit(entry_name: &str, note_id: usize, new_note: String, path: PathBuf) -
 
     file.set_len(0)?;
     file.seek(SeekFrom::Start(0))?;
-    serde_json::to_writer_pretty(file, &entries)?;
+    serde_json::to_writer(file, &entries)?;
 
     Ok(())
 }

@@ -66,7 +66,7 @@ pub fn add(new: Entry, path: PathBuf) -> Result<()> {
 
     file.set_len(0)?;
     file.seek(SeekFrom::Start(0))?;
-    serde_json::to_writer_pretty(&mut file, &entries)?;
+    serde_json::to_writer(&mut file, &entries)?;
 
     Ok(())
 }
@@ -93,7 +93,7 @@ pub fn remove(name: &str, path: PathBuf) -> Result<()> {
         .cloned()
         .collect::<Vec<Entry>>();
 
-    serde_json::to_writer_pretty(&mut file, &entries)?;
+    serde_json::to_writer(&mut file, &entries)?;
 
     Ok(())
 }
@@ -176,7 +176,7 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     file.set_len(0)?;
     file.seek(SeekFrom::Start(0))?;
 
-    serde_json::to_writer_pretty(&mut file, &entries)?;
+    serde_json::to_writer(&mut file, &entries)?;
 
     if edited {
         Ok(())
