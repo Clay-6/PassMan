@@ -172,7 +172,9 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     if edited {
         Ok(())
     } else {
-        Err(anyhow!(ManagerError::EntryDoesntExist))
+        Err(anyhow!(ManagerError::EntryDoesntExist {
+            name: name.to_string()
+        }))
     }
 }
 
