@@ -51,7 +51,7 @@ fn main() -> Result<()> {
             };
 
             if manager::entry_exists(&new.name, &file)? {
-                return Err(anyhow!(ManagerError::EntryExists));
+                return Err(anyhow!(ManagerError::EntryExists { name: new.name }));
             }
 
             manager::add(new, file)?;

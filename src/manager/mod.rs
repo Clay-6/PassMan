@@ -59,7 +59,7 @@ pub fn add(new: Entry, path: PathBuf) -> Result<()> {
         .iter()
         .any(|entry| entry.name.to_lowercase() == new.name.to_lowercase())
     {
-        return Err(anyhow!(ManagerError::EntryExists));
+        return Err(anyhow!(ManagerError::EntryExists { name: new.name }));
     }
 
     entries.push(new);
