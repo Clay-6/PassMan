@@ -51,7 +51,10 @@ pub fn remove(entry_name: &str, note_id: usize, path: PathBuf) -> Result<()> {
     for entry in &mut entries {
         if entry.name == entry_name {
             if note_id >= entry.notes.len() {
-                return Err(anyhow!(ManagerError::NoteIdOOB));
+                return Err(anyhow!(ManagerError::NoteIdOOB {
+                    id: note_id,
+                    len: entry.notes.len()
+                }));
             } else {
                 entry.notes.remove(note_id);
             }
@@ -74,7 +77,10 @@ pub fn edit(entry_name: &str, note_id: usize, new_note: String, path: PathBuf) -
     for entry in &mut entries {
         if entry.name == entry_name {
             if note_id >= entry.notes.len() {
-                return Err(anyhow!(ManagerError::NoteIdOOB));
+                return Err(anyhow!(ManagerError::NoteIdOOB {
+                    id: note_id,
+                    len: entry.notes.len()
+                }));
             } else {
                 entry.notes[note_id] = new_note;
             }
