@@ -182,13 +182,9 @@ pub fn entry_exists(search_name: &str, path: &PathBuf) -> Result<bool> {
 
     let entries = get_entries(&file)?;
 
-    for entry in entries {
-        if entry.name == search_name {
-            return Ok(true);
-        }
-    }
-
-    Ok(false)
+    Ok(entries
+        .iter()
+        .any(|entry| entry.name.to_lowercase() == search_name.to_lowercase()))
 }
 
 fn get_entries(file: &fs::File) -> Result<Vec<Entry>> {
@@ -197,6 +193,7 @@ fn get_entries(file: &fs::File) -> Result<Vec<Entry>> {
         Err(e) if e.is_eof() => Vec::new(),
         Err(e) => return Err(e.into()),
     };
+
     Ok(entries)
 }
 
