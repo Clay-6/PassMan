@@ -42,3 +42,27 @@ impl fmt::Display for Entry {
         write!(f, "   Contains {} notes", self.notes.len())
     }
 }
+
+impl PartialEq<str> for Entry {
+    /// Purely so I dont accidentally forget to
+    /// convert both to lowercase
+    fn eq(&self, other: &str) -> bool {
+        self.name.to_lowercase() == other.to_lowercase()
+    }
+}
+
+impl PartialEq<&str> for Entry {
+    /// Purely so I dont accidentally forget to
+    /// convert both to lowercase
+    fn eq(&self, other: &&str) -> bool {
+        self.name.to_lowercase() == other.to_lowercase()
+    }
+}
+
+impl PartialEq<String> for Entry {
+    /// Purely so I dont accidentally forget to
+    /// convert both to lowercase
+    fn eq(&self, other: &String) -> bool {
+        self.name.to_lowercase() == other.to_lowercase()
+    }
+}

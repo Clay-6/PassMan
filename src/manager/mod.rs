@@ -46,10 +46,7 @@ pub fn remove(name: &str, path: PathBuf) -> Result<()> {
     file.set_len(0)?;
     file.seek(SeekFrom::Start(0))?;
 
-    if !entries
-        .iter()
-        .any(|entry| entry.name.to_lowercase() == name.to_lowercase())
-    {
+    if !entries.iter().any(|entry| entry == name) {
         return Err(anyhow!(ManagerError::EntryDoesntExist {
             name: name.to_string()
         }));
@@ -57,7 +54,7 @@ pub fn remove(name: &str, path: PathBuf) -> Result<()> {
 
     entries = entries
         .iter()
-        .filter(|entry| entry.name != name)
+        .filter(|entry| *entry != name)
         .cloned()
         .collect::<Vec<Entry>>();
 
@@ -72,7 +69,7 @@ pub fn show(name: &str, path: PathBuf, copy_passwd: bool) -> Result<()> {
     let entries = get_entries(&file)?;
 
     for entry in entries {
-        if entry.name.to_lowercase() == name.to_lowercase() {
+        if entry == name {
             println!("{entry}");
             if copy_passwd {
                 let mut ctx = ClipboardContext::new().expect("Failed to create clipboard context");
@@ -102,10 +99,7 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
 
     let entries = get_entries(&file)?;
 
-    if !entries
-        .iter()
-        .any(|entry| entry.name.to_lowercase() == name.to_lowercase())
-    {
+    if !entries.iter().any(|entry| entry == name) {
         return Err(anyhow!(ManagerError::EntryDoesntExist {
             name: name.to_string()
         }));
@@ -114,7 +108,7 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     let entries: Vec<Entry> = entries
         .iter()
         .map(|entry| {
-            if entry.name.to_lowercase() == name.to_lowercase() {
+            if entry == name {
                 let new_name = if new.name.is_empty() {
                     &entry.name
                 } else {
@@ -164,9 +158,7 @@ pub fn entry_exists(search_name: &str, path: &PathBuf) -> Result<bool> {
 
     let entries = get_entries(&file)?;
 
-    Ok(entries
-        .iter()
-        .any(|entry| entry.name.to_lowercase() == search_name.to_lowercase()))
+    Ok(entries.iter().any(|entry| entry == search_name))
 }
 
 fn get_entries(file: &fs::File) -> Result<Vec<Entry>> {
