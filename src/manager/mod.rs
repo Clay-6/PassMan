@@ -1,50 +1,18 @@
+pub mod entry;
 pub mod errors;
 pub mod notes;
 
 use anyhow::{anyhow, Result};
 use copypasta::{ClipboardContext, ClipboardProvider};
-use serde::{Deserialize, Serialize};
 
 use std::{
-    fmt::Display,
     fs::{self, OpenOptions},
     io::{Seek, SeekFrom},
     path::PathBuf,
 };
 
+use entry::Entry;
 use errors::ManagerError;
-
-/// Struct to serialise & deserialise JSON to & from
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Entry {
-    pub(crate) name: String,
-    pub(crate) username: String,
-    pub(crate) password: Vec<u8>,
-    pub(crate) location: String,
-    pub(crate) notes: Vec<String>,
-}
-
-impl Entry {
-    pub fn new(name: String, location: String, username: String, password: String) -> Self {
-        let password = Self::hide_password(password);
-
-        Self {
-            name,
-            username,
-            password,
-            location,
-            notes: Vec::new(),
-        }
-    }
-
-    fn hide_password(password: String) -> Vec<u8> {
-        Vec::from(password.as_bytes())
-    }
-
-    fn show_password(&self) -> String {
-        String::from_utf8(self.password.clone()).unwrap()
-    }
-}
 
 pub fn add(new: Entry, path: PathBuf) -> Result<()> {
     let mut file = fs::OpenOptions::new()
@@ -209,13 +177,4 @@ fn get_entries(file: &fs::File) -> Result<Vec<Entry>> {
     };
 
     Ok(entries)
-}
-
-impl Display for Entry {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "{} [for {}]", self.name, self.location)?;
-        writeln!(f, "   Username: {}", self.username)?;
-        writeln!(f, "   Password: {}", self.show_password())?;
-        write!(f, "   Contains {} notes", self.notes.len())
-    }
 }

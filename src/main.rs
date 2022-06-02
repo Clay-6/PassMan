@@ -8,7 +8,7 @@ use clap::Parser;
 
 use cli::{Action, Args, ConfigField, NotesSubcmd};
 use config::Config;
-use manager::{entry_exists, errors::ManagerError, notes, Entry};
+use manager::{entry::Entry, entry_exists, errors::ManagerError, notes};
 
 fn main() -> Result<()> {
     let args = Args::parse();
