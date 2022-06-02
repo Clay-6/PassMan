@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.9.0
+
+* Improved quality of errors
+* More commands return an error when the given entry doesn't exist
+* Fixed bug where `Entry does not exist` error would happen when the entry definitely existed
+* All commands now case-insensitive
+* Slight optimisations made
+
 ## v0.8.0
 
 * Added `copy` flag to `show` to allow for
