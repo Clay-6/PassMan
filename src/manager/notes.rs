@@ -78,6 +78,7 @@ pub fn edit(entry_name: &str, note_id: usize, new_note: String, path: PathBuf) -
             } else {
                 entry.notes[note_id] = new_note;
             }
+
             break;
         }
     }

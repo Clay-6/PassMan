@@ -2,7 +2,7 @@ pub mod errors;
 pub mod notes;
 
 use anyhow::{anyhow, Result};
-use copypasta::ClipboardProvider;
+use copypasta::{ClipboardContext, ClipboardProvider};
 use serde::{Deserialize, Serialize};
 
 use std::{
@@ -27,6 +27,7 @@ pub struct Entry {
 impl Entry {
     pub fn new(name: String, location: String, username: String, password: String) -> Self {
         let password = Self::hide_password(password);
+
         Self {
             name,
             username,
@@ -53,6 +54,7 @@ pub fn add(new: Entry, path: PathBuf) -> Result<()> {
         .open(path)?;
 
     let mut entries = get_entries(&file)?;
+
     if entries.iter().any(|entry| entry.name == new.name) {
         return Err(anyhow!(ENTRY_EXISTS));
     }
@@ -67,7 +69,7 @@ pub fn add(new: Entry, path: PathBuf) -> Result<()> {
 }
 
 pub fn remove(name: &str, path: PathBuf) -> Result<()> {
-    let mut file = fs::OpenOptions::new().read(true).write(true).open(path)?;
+    let mut file = OpenOptions::new().read(true).write(true).open(path)?;
 
     let mut entries = get_entries(&file)?;
     file.set_len(0)?;
@@ -93,8 +95,6 @@ pub fn show(name: &str, path: PathBuf, copy_passwd: bool) -> Result<()> {
         if entry.name.to_lowercase() == name.to_lowercase() {
             println!("{entry}");
             if copy_passwd {
-                use copypasta::ClipboardContext;
-
                 let mut ctx = ClipboardContext::new().expect("Failed to create clipboard context");
                 ctx.set_contents(entry.show_password())
                     .expect("Failed to copy password");
