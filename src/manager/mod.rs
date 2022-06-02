@@ -137,7 +137,7 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     let entries: Vec<Entry> = entries
         .iter()
         .map(|entry| {
-            if entry.name == name {
+            if entry.name.to_lowercase() == name.to_lowercase() {
                 let new_name = if new.name.is_empty() {
                     &entry.name
                 } else {

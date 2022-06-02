@@ -55,8 +55,6 @@ pub enum Action {
     #[clap(alias("rm"))]
     Remove {
         /// The name of the entry to remove
-        ///
-        /// Is case sensitive
         name: String,
         /// The entries file to use
         ///
@@ -76,8 +74,6 @@ pub enum Action {
     /// See the info in a specific entry
     Show {
         /// The name of the password entry to show
-        ///
-        /// Case insensitive
         name: String,
         /// Path to the entries file to use
         ///
@@ -93,8 +89,6 @@ pub enum Action {
     /// Leave fields blank to leave them unchanged
     Edit {
         /// The name of the entry to edit
-        ///
-        /// Is case sensitive
         name: String,
         /// The path to the entries file to use
         ///
@@ -129,7 +123,8 @@ pub enum NotesSubcmd {
         #[clap(short, long)]
         file: Option<PathBuf>,
     },
-    /// Remove a note from a given entry
+    /// Remove a note from a given entry.
+    /// Can also use `rm`
     #[clap(alias("rm"))]
     Remove {
         /// The entry to remove the note from
