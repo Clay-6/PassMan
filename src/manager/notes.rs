@@ -6,7 +6,7 @@ use std::{
 
 use anyhow::{anyhow, Result};
 
-use crate::manager::{errors::ENTRY_ID_OOB, get_entries};
+use crate::manager::{errors::ManagerError, get_entries};
 
 pub fn add(name: &str, note: String, path: PathBuf) -> Result<()> {
     let mut file = OpenOptions::new().write(true).read(true).open(path)?;
@@ -51,7 +51,7 @@ pub fn remove(entry_name: &str, note_id: usize, path: PathBuf) -> Result<()> {
     for entry in &mut entries {
         if entry.name == entry_name {
             if note_id >= entry.notes.len() {
-                return Err(anyhow!(ENTRY_ID_OOB));
+                return Err(anyhow!(ManagerError::NoteIdOOB));
             } else {
                 entry.notes.remove(note_id);
             }
@@ -74,7 +74,7 @@ pub fn edit(entry_name: &str, note_id: usize, new_note: String, path: PathBuf) -
     for entry in &mut entries {
         if entry.name == entry_name {
             if note_id >= entry.notes.len() {
-                return Err(anyhow!(ENTRY_ID_OOB));
+                return Err(anyhow!(ManagerError::NoteIdOOB));
             } else {
                 entry.notes[note_id] = new_note;
             }

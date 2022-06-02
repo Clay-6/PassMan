@@ -12,7 +12,7 @@ use std::{
     path::PathBuf,
 };
 
-use errors::{ENTRY_DOESNT_EXIST, ENTRY_EXISTS};
+use errors::ManagerError;
 
 /// Struct to serialise & deserialise JSON to & from
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
@@ -55,8 +55,11 @@ pub fn add(new: Entry, path: PathBuf) -> Result<()> {
 
     let mut entries = get_entries(&file)?;
 
-    if entries.iter().any(|entry| entry.name == new.name) {
-        return Err(anyhow!(ENTRY_EXISTS));
+    if entries
+        .iter()
+        .any(|entry| entry.name.to_lowercase() == new.name.to_lowercase())
+    {
+        return Err(anyhow!(ManagerError::EntryExists));
     }
 
     entries.push(new);
@@ -169,7 +172,7 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     if edited {
         Ok(())
     } else {
-        Err(anyhow!(ENTRY_DOESNT_EXIST))
+        Err(anyhow!(ManagerError::EntryDoesntExist))
     }
 }
 

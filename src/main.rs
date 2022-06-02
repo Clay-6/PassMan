@@ -8,11 +8,7 @@ use clap::Parser;
 
 use cli::{Action, Args, ConfigField, NotesSubcmd};
 use config::Config;
-use manager::{
-    entry_exists,
-    errors::{ENTRY_DOESNT_EXIST, ENTRY_EXISTS},
-    notes, Entry,
-};
+use manager::{entry_exists, errors::ManagerError, notes, Entry};
 
 fn main() -> Result<()> {
     let args = Args::parse();
@@ -55,7 +51,7 @@ fn main() -> Result<()> {
             };
 
             if manager::entry_exists(&new.name, &file)? {
-                return Err(anyhow!(ENTRY_EXISTS));
+                return Err(anyhow!(ManagerError::EntryExists));
             }
 
             manager::add(new, file)?;
@@ -68,7 +64,7 @@ fn main() -> Result<()> {
                 None => config.file,
             };
             if !manager::entry_exists(&name, &file)? {
-                return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                return Err(anyhow!(ManagerError::EntryDoesntExist));
             }
 
             manager::remove(&name, file)?;
@@ -87,7 +83,7 @@ fn main() -> Result<()> {
                 None => config.file,
             };
             if !manager::entry_exists(&name, &file)? {
-                return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                return Err(anyhow!(ManagerError::EntryDoesntExist));
             }
 
             let new_name = get_input::<String>("Enter a new name: ").trim().to_string();
@@ -111,7 +107,7 @@ fn main() -> Result<()> {
             };
 
             if !entry_exists(&name, &file)? {
-                return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                return Err(anyhow!(ManagerError::EntryDoesntExist));
             }
 
             manager::show(&name, file, copy)?;
@@ -122,8 +118,9 @@ fn main() -> Result<()> {
                     Some(path) => path,
                     None => config.file,
                 };
+
                 if !entry_exists(&entry, &file)? {
-                    return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                    return Err(anyhow!(ManagerError::EntryDoesntExist));
                 }
 
                 notes::add(&entry, note, file)?;
@@ -134,8 +131,9 @@ fn main() -> Result<()> {
                     Some(path) => path,
                     None => config.file,
                 };
+
                 if !entry_exists(&entry, &file)? {
-                    return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                    return Err(anyhow!(ManagerError::EntryDoesntExist));
                 }
 
                 notes::remove(&entry, id, file)?;
@@ -152,7 +150,7 @@ fn main() -> Result<()> {
                     None => config.file,
                 };
                 if !entry_exists(&entry, &file)? {
-                    return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                    return Err(anyhow!(ManagerError::EntryDoesntExist));
                 }
 
                 notes::edit(&entry, id, new_note, file)?;
@@ -163,8 +161,9 @@ fn main() -> Result<()> {
                     Some(path) => path,
                     None => config.file,
                 };
+
                 if !entry_exists(&entry, &file)? {
-                    return Err(anyhow!(ENTRY_DOESNT_EXIST));
+                    return Err(anyhow!(ManagerError::EntryDoesntExist));
                 }
 
                 notes::list(&entry, file)?;
