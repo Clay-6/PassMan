@@ -2,7 +2,7 @@ use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
-#[clap(version, about, long_about = None)]
+#[clap(author, version, about, long_about = None)]
 pub struct Args {
     /// The action to perform
     #[clap(subcommand)]
