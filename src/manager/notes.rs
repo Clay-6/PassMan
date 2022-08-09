@@ -4,18 +4,19 @@ use std::{
     path::PathBuf,
 };
 
-use anyhow::{anyhow, Result};
-
-use crate::manager::{errors::ManagerError, get_entries};
+use crate::manager::{
+    error::{ManagerError, Result},
+    get_entries,
+};
 
 pub fn add(name: &str, note: String, path: PathBuf) -> Result<()> {
     let mut file = OpenOptions::new().write(true).read(true).open(path)?;
     let mut entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == name) {
-        return Err(anyhow!(ManagerError::EntryDoesntExist {
-            name: name.to_string()
-        }));
+        return Err(ManagerError::EntryDoesntExist {
+            name: name.to_string(),
+        });
     }
 
     for entry in entries.iter_mut() {
@@ -37,9 +38,9 @@ pub fn list(entry_name: &str, path: PathBuf) -> Result<()> {
     let entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == entry_name) {
-        return Err(anyhow!(ManagerError::EntryDoesntExist {
-            name: entry_name.to_string()
-        }));
+        return Err(ManagerError::EntryDoesntExist {
+            name: entry_name.to_string(),
+        });
     }
 
     for entry in entries {
@@ -59,18 +60,18 @@ pub fn remove(entry_name: &str, note_id: usize, path: PathBuf) -> Result<()> {
     let mut entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == entry_name) {
-        return Err(anyhow!(ManagerError::EntryDoesntExist {
-            name: entry_name.to_string()
-        }));
+        return Err(ManagerError::EntryDoesntExist {
+            name: entry_name.to_string(),
+        });
     }
 
     for entry in &mut entries {
         if entry == entry_name {
             if note_id >= entry.notes.len() {
-                return Err(anyhow!(ManagerError::NoteIdOOB {
+                return Err(ManagerError::NoteIdOOB {
                     id: note_id,
-                    len: entry.notes.len()
-                }));
+                    len: entry.notes.len(),
+                });
             } else {
                 entry.notes.remove(note_id);
             }
@@ -91,18 +92,18 @@ pub fn edit(entry_name: &str, note_id: usize, new_note: String, path: PathBuf) -
     let mut entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == entry_name) {
-        return Err(anyhow!(ManagerError::EntryDoesntExist {
-            name: entry_name.to_string()
-        }));
+        return Err(ManagerError::EntryDoesntExist {
+            name: entry_name.to_string(),
+        });
     }
 
     for entry in &mut entries {
         if entry == entry_name {
             if note_id >= entry.notes.len() {
-                return Err(anyhow!(ManagerError::NoteIdOOB {
+                return Err(ManagerError::NoteIdOOB {
                     id: note_id,
-                    len: entry.notes.len()
-                }));
+                    len: entry.notes.len(),
+                });
             } else {
                 entry.notes[note_id] = new_note;
             }

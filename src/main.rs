@@ -3,12 +3,16 @@ mod config;
 mod generator;
 mod manager;
 
-use anyhow::{anyhow, Result};
 use clap::Parser;
 
 use cli::{Action, Args, ConfigField, NotesSubcmd};
 use config::Config;
-use manager::{entry::Entry, entry_exists, errors::ManagerError, notes};
+use manager::{
+    entry::Entry,
+    entry_exists,
+    error::{ManagerError, Result},
+    notes,
+};
 
 fn main() -> Result<()> {
     let args = Args::parse();
@@ -51,7 +55,7 @@ fn main() -> Result<()> {
             };
 
             if manager::entry_exists(&new.name, &file)? {
-                return Err(anyhow!(ManagerError::EntryExists { name: new.name }));
+                return Err(ManagerError::EntryExists { name: new.name });
             }
 
             manager::add(new, file)?;
@@ -64,7 +68,7 @@ fn main() -> Result<()> {
                 None => config.file,
             };
             if !manager::entry_exists(&name, &file)? {
-                return Err(anyhow!(ManagerError::EntryDoesntExist { name }));
+                return Err(ManagerError::EntryDoesntExist { name });
             }
 
             manager::remove(&name, file)?;
@@ -83,7 +87,7 @@ fn main() -> Result<()> {
                 None => config.file,
             };
             if !manager::entry_exists(&name, &file)? {
-                return Err(anyhow!(ManagerError::EntryDoesntExist { name }));
+                return Err(ManagerError::EntryDoesntExist { name });
             }
 
             let new_name = get_input::<String>("Enter a new name: ").trim().to_string();
@@ -107,7 +111,7 @@ fn main() -> Result<()> {
             };
 
             if !entry_exists(&name, &file)? {
-                return Err(anyhow!(ManagerError::EntryDoesntExist { name }));
+                return Err(ManagerError::EntryDoesntExist { name });
             }
 
             manager::show(&name, file, copy)?;
@@ -120,7 +124,7 @@ fn main() -> Result<()> {
                 };
 
                 if !entry_exists(&entry, &file)? {
-                    return Err(anyhow!(ManagerError::EntryDoesntExist { name: entry }));
+                    return Err(ManagerError::EntryDoesntExist { name: entry });
                 }
 
                 notes::add(&entry, note, file)?;
@@ -133,7 +137,7 @@ fn main() -> Result<()> {
                 };
 
                 if !entry_exists(&entry, &file)? {
-                    return Err(anyhow!(ManagerError::EntryDoesntExist { name: entry }));
+                    return Err(ManagerError::EntryDoesntExist { name: entry });
                 }
 
                 notes::remove(&entry, id, file)?;
@@ -150,7 +154,7 @@ fn main() -> Result<()> {
                     None => config.file,
                 };
                 if !entry_exists(&entry, &file)? {
-                    return Err(anyhow!(ManagerError::EntryDoesntExist { name: entry }));
+                    return Err(ManagerError::EntryDoesntExist { name: entry });
                 }
 
                 notes::edit(&entry, id, new_note, file)?;
@@ -163,7 +167,7 @@ fn main() -> Result<()> {
                 };
 
                 if !entry_exists(&entry, &file)? {
-                    return Err(anyhow!(ManagerError::EntryDoesntExist { name: entry }));
+                    return Err(ManagerError::EntryDoesntExist { name: entry });
                 }
 
                 notes::list(&entry, file)?;

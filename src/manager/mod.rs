@@ -1,8 +1,7 @@
 pub mod entry;
-pub mod errors;
+pub mod error;
 pub mod notes;
 
-use anyhow::{anyhow, Result};
 use arboard::Clipboard;
 
 use std::{
@@ -12,10 +11,10 @@ use std::{
 };
 
 use entry::Entry;
-use errors::ManagerError;
+use error::{ManagerError, Result};
 
 pub fn add(new: Entry, path: PathBuf) -> Result<()> {
-    let mut file = fs::OpenOptions::new()
+    let mut file = OpenOptions::new()
         .create(true)
         .read(true)
         .write(true)
@@ -27,7 +26,7 @@ pub fn add(new: Entry, path: PathBuf) -> Result<()> {
         .iter()
         .any(|entry| entry.name.to_lowercase() == new.name.to_lowercase())
     {
-        return Err(anyhow!(ManagerError::EntryExists { name: new.name }));
+        return Err(ManagerError::EntryExists { name: new.name });
     }
 
     entries.push(new);
@@ -47,9 +46,9 @@ pub fn remove(name: &str, path: PathBuf) -> Result<()> {
     file.seek(SeekFrom::Start(0))?;
 
     if !entries.iter().any(|entry| entry == name) {
-        return Err(anyhow!(ManagerError::EntryDoesntExist {
-            name: name.to_string()
-        }));
+        return Err(ManagerError::EntryDoesntExist {
+            name: name.to_string(),
+        });
     }
 
     entries = entries
@@ -64,7 +63,7 @@ pub fn remove(name: &str, path: PathBuf) -> Result<()> {
 }
 
 pub fn show(name: &str, path: PathBuf, copy_passwd: bool) -> Result<()> {
-    let file = fs::OpenOptions::new().read(true).open(path)?;
+    let file = OpenOptions::new().read(true).open(path)?;
 
     let entries = get_entries(&file)?;
 
@@ -94,14 +93,14 @@ pub fn list(path: PathBuf) -> Result<()> {
 }
 
 pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
-    let mut file = fs::OpenOptions::new().read(true).write(true).open(path)?;
+    let mut file = OpenOptions::new().read(true).write(true).open(path)?;
 
     let entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == name) {
-        return Err(anyhow!(ManagerError::EntryDoesntExist {
-            name: name.to_string()
-        }));
+        return Err(ManagerError::EntryDoesntExist {
+            name: name.to_string(),
+        });
     }
 
     let entries: Vec<Entry> = entries
