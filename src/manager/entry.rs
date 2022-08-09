@@ -18,10 +18,15 @@ impl Entry {
             let length = password
                 .chars()
                 .skip(4)
+                .filter(|c| c.is_ascii_digit())
                 .collect::<String>()
                 .parse()
                 .unwrap();
-            crate::generator::generate_pw(length, true, true)
+            crate::generator::generate_pw(
+                length,
+                !password.contains("-n"),
+                !password.contains("-s"),
+            )
         } else {
             password
         });
