@@ -4,9 +4,9 @@ use std::{
     path::PathBuf,
 };
 
-use crate::manager::{
+use crate::{
     error::{ManagerError, Result},
-    get_entries,
+    manager::get_entries,
 };
 
 pub fn add(name: &str, note: String, path: PathBuf) -> Result<()> {

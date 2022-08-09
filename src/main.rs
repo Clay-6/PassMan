@@ -1,5 +1,6 @@
 mod cli;
 mod config;
+mod error;
 mod generator;
 mod manager;
 
@@ -7,12 +8,8 @@ use clap::Parser;
 
 use cli::{Action, Args, ConfigField, NotesSubcmd};
 use config::Config;
-use manager::{
-    entry::Entry,
-    entry_exists,
-    error::{ManagerError, Result},
-    notes,
-};
+use error::{ManagerError, Result};
+use manager::{entry::Entry, entry_exists, notes};
 
 fn main() -> Result<()> {
     let args = Args::parse();

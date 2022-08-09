@@ -1,5 +1,4 @@
 pub mod entry;
-pub mod error;
 pub mod notes;
 
 use arboard::Clipboard;
@@ -10,8 +9,8 @@ use std::{
     path::PathBuf,
 };
 
+use crate::error::{ManagerError, Result};
 use entry::Entry;
-use error::{ManagerError, Result};
 
 pub fn add(new: Entry, path: PathBuf) -> Result<()> {
     let mut file = OpenOptions::new()
