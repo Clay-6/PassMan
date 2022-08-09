@@ -3,7 +3,7 @@ pub mod errors;
 pub mod notes;
 
 use anyhow::{anyhow, Result};
-use copypasta::{ClipboardContext, ClipboardProvider};
+use arboard::Clipboard;
 
 use std::{
     fs::{self, OpenOptions},
@@ -72,9 +72,8 @@ pub fn show(name: &str, path: PathBuf, copy_passwd: bool) -> Result<()> {
         if entry == name {
             println!("{entry}");
             if copy_passwd {
-                let mut ctx = ClipboardContext::new().expect("Failed to create clipboard context");
-                ctx.set_contents(entry.show_password())
-                    .expect("Failed to copy password");
+                let mut ctx = Clipboard::new()?;
+                ctx.set_text(entry.show_password())?;
             }
         }
     }
