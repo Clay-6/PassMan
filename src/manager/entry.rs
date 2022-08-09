@@ -14,7 +14,17 @@ pub struct Entry {
 
 impl Entry {
     pub fn new(name: String, location: String, username: String, password: String) -> Self {
-        let password = Self::hide_password(password);
+        let password = Self::hide_password(if password.starts_with("!gen") {
+            let length = password
+                .chars()
+                .skip(4)
+                .collect::<String>()
+                .parse()
+                .unwrap();
+            crate::generator::generate_pw(length, true, true)
+        } else {
+            password
+        });
 
         Self {
             name,
