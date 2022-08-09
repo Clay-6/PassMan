@@ -1,5 +1,5 @@
 #[derive(Debug, thiserror::Error)]
-pub enum ManagerError {
+pub enum Error {
     #[error("Entry `{name}` already exists")]
     EntryExists { name: String },
     #[error("Entry `{name}` does not exist")]
@@ -9,11 +9,11 @@ pub enum ManagerError {
     #[error(transparent)]
     IOError(#[from] std::io::Error),
     #[error(transparent)]
-    SerdeError(#[from] serde_json::Error),
+    JSONError(#[from] serde_json::Error),
     #[error(transparent)]
     ClipboardError(#[from] arboard::Error),
     #[error(transparent)]
     ConfigError(#[from] confy::ConfyError),
 }
 
-pub type Result<T> = std::result::Result<T, ManagerError>;
+pub type Result<T> = std::result::Result<T, Error>;

@@ -5,7 +5,7 @@ use std::{
 };
 
 use crate::{
-    error::{ManagerError, Result},
+    error::{Error, Result},
     manager::get_entries,
 };
 
@@ -14,7 +14,7 @@ pub fn add(name: &str, note: String, path: PathBuf) -> Result<()> {
     let mut entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == name) {
-        return Err(ManagerError::EntryDoesntExist {
+        return Err(Error::EntryDoesntExist {
             name: name.to_string(),
         });
     }
@@ -38,7 +38,7 @@ pub fn list(entry_name: &str, path: PathBuf) -> Result<()> {
     let entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == entry_name) {
-        return Err(ManagerError::EntryDoesntExist {
+        return Err(Error::EntryDoesntExist {
             name: entry_name.to_string(),
         });
     }
@@ -60,7 +60,7 @@ pub fn remove(entry_name: &str, note_id: usize, path: PathBuf) -> Result<()> {
     let mut entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == entry_name) {
-        return Err(ManagerError::EntryDoesntExist {
+        return Err(Error::EntryDoesntExist {
             name: entry_name.to_string(),
         });
     }
@@ -68,7 +68,7 @@ pub fn remove(entry_name: &str, note_id: usize, path: PathBuf) -> Result<()> {
     for entry in &mut entries {
         if entry == entry_name {
             if note_id >= entry.notes.len() {
-                return Err(ManagerError::NoteIdOOB {
+                return Err(Error::NoteIdOOB {
                     id: note_id,
                     len: entry.notes.len(),
                 });
@@ -92,7 +92,7 @@ pub fn edit(entry_name: &str, note_id: usize, new_note: String, path: PathBuf) -
     let mut entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == entry_name) {
-        return Err(ManagerError::EntryDoesntExist {
+        return Err(Error::EntryDoesntExist {
             name: entry_name.to_string(),
         });
     }
@@ -100,7 +100,7 @@ pub fn edit(entry_name: &str, note_id: usize, new_note: String, path: PathBuf) -
     for entry in &mut entries {
         if entry == entry_name {
             if note_id >= entry.notes.len() {
-                return Err(ManagerError::NoteIdOOB {
+                return Err(Error::NoteIdOOB {
                     id: note_id,
                     len: entry.notes.len(),
                 });

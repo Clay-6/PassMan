@@ -9,7 +9,7 @@ use std::{
     path::PathBuf,
 };
 
-use crate::error::{ManagerError, Result};
+use crate::error::{Error, Result};
 use entry::Entry;
 
 pub fn add(new: Entry, path: PathBuf) -> Result<()> {
@@ -25,7 +25,7 @@ pub fn add(new: Entry, path: PathBuf) -> Result<()> {
         .iter()
         .any(|entry| entry.name.to_lowercase() == new.name.to_lowercase())
     {
-        return Err(ManagerError::EntryExists { name: new.name });
+        return Err(Error::EntryExists { name: new.name });
     }
 
     entries.push(new);
@@ -45,7 +45,7 @@ pub fn remove(name: &str, path: PathBuf) -> Result<()> {
     file.seek(SeekFrom::Start(0))?;
 
     if !entries.iter().any(|entry| entry == name) {
-        return Err(ManagerError::EntryDoesntExist {
+        return Err(Error::EntryDoesntExist {
             name: name.to_string(),
         });
     }
@@ -97,7 +97,7 @@ pub fn edit(name: &str, new: Entry, path: PathBuf) -> Result<()> {
     let entries = get_entries(&file)?;
 
     if !entries.iter().any(|entry| entry == name) {
-        return Err(ManagerError::EntryDoesntExist {
+        return Err(Error::EntryDoesntExist {
             name: name.to_string(),
         });
     }
