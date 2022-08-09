@@ -34,6 +34,9 @@ pub enum Action {
         #[clap(short, long)]
         username: Option<String>,
         /// The password to be saved
+        ///
+        /// Set to `!gen[length]` to generate a random password,
+        /// with '-s' disabling special chars & '-n' disabling numbers
         #[clap(short, long)]
         password: Option<String>,
         /// Where the password will be used
@@ -86,7 +89,9 @@ pub enum Action {
     },
     /// Edit a password entry
     ///
-    /// Leave fields blank to leave them unchanged
+    /// Leave fields blank to leave them unchanged.
+    /// Random password generation works the same as
+    /// in the `add` command
     Edit {
         /// The name of the entry to edit
         name: String,
