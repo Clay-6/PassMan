@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.10.0
+
+* Can now generate random passwords in `add` & `edit` commands
+  * Type '!gen[length]' & add '-n' to disable numbers and '-s' to disable special characters
+* Improvements to error handling
+* Dependency changes & updates
+
 ## v0.9.0
 
 * Improved quality of errors
