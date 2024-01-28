@@ -10,6 +10,7 @@ use cli::{Action, Args, ConfigField, NotesSubcmd};
 use config::Config;
 use error::{Error, Result};
 use manager::{entry::Entry, entry_exists, notes};
+use rpassword::prompt_password;
 
 fn main() -> Result<()> {
     let args = Args::parse();
@@ -47,7 +48,7 @@ fn main() -> Result<()> {
                 let name = get_input::<String>("Enter a name: ").trim().to_string();
                 let location = get_input::<String>("Enter a location: ").trim().to_string();
                 let username = get_input::<String>("Enter a username: ").trim().to_string();
-                let password = get_input("Enter a password: ");
+                let password = prompt_password("Enter a password: ")?;
                 Entry::new(name, location, username, password)
             };
 
@@ -91,7 +92,7 @@ fn main() -> Result<()> {
             let new_un = get_input::<String>("Enter a new username: ")
                 .trim()
                 .to_string();
-            let new_pw = get_input::<String>("Enter a new password: ")
+            let new_pw = prompt_password("Enter a new password: ")?
                 .trim()
                 .to_string();
             let new_location = get_input::<String>("Enter a new location: ")
