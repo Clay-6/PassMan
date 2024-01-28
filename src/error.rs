@@ -7,13 +7,13 @@ pub enum Error {
     #[error("Note ID was {id} but there are only {len} notes")]
     NoteIdOOB { id: usize, len: usize },
     #[error(transparent)]
-    IOError(#[from] std::io::Error),
+    IOErr(#[from] std::io::Error),
     #[error(transparent)]
-    JSONError(#[from] serde_json::Error),
+    JSONErr(#[from] serde_json::Error),
     #[error(transparent)]
-    ClipboardError(#[from] arboard::Error),
+    ClipboardErr(#[from] arboard::Error),
     #[error(transparent)]
-    ConfigError(#[from] confy::ConfyError),
+    ConfigErr(#[from] confy::ConfyError),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
